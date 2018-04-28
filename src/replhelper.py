@@ -24,11 +24,19 @@ class JuliaNameSpace(object):
 
 
 def customized_ipython():
+    from traitlets.config import Config
     import IPython
     from julia import Julia
+
     julia = Julia()
     Main = JuliaNameSpace(julia)
-    IPython.start_ipython(user_ns=dict(
+    user_ns = dict(
         julia=julia,
         Main=Main,
-    ))
+    )
+
+    c = Config()
+    c.TerminalIPythonApp.display_banner = False
+
+    print()
+    IPython.start_ipython(user_ns=user_ns, config=c)
