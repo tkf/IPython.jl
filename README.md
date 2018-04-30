@@ -10,7 +10,14 @@
 
 ## Usage
 
-Run `using IPython` and then type `.` in empty `julia>` prompt.
+Run `using IPython` and then type `.` in empty `julia>` prompt or run
+`IPython.start_ipython()`.  Exiting IPython as usual (e.g., `Ctrl-D`)
+bring you back to Julia REPL.  Re-entering IPython keeps the previous
+state.  In IPython, two variables are pre-defined: `Main` for
+accessing top-level namespace of the Julia REPL and `julia` for
+accessing an instance of `julia.Julia` object.
+
+**Note:**
 First launch of IPython may be slow.
 
 
