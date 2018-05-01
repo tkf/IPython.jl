@@ -13,7 +13,12 @@ class JuliaNameSpace(object):
         if name.startswith('_'):
             super(JuliaNameSpace, self).__setattr__(name, value)
         else:
-            setter = '(x) -> eval(:({} = $x))'.format(jl_name(name))
+            setter = '''
+            Main.PyCall.pyfunctionret(
+                (x) -> eval(:({} = $x)),
+                Any,
+                PyCall.PyAny)
+            '''.format(jl_name(name))
             self.__julia.eval(setter)(value)
 
     def __getattr__(self, name):
