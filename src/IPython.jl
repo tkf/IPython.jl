@@ -3,8 +3,11 @@ module IPython
 using Base: LineEdit
 using PyCall
 
-function start_ipython()
-    pyimport("replhelper")[:customized_ipython]()
+function start_ipython(; kwargs...)
+    pyimport("replhelper")[:customized_ipython](;
+        init_julia = false,
+        jl_runtime_path = joinpath(JULIA_HOME, Base.julia_exename()),
+        kwargs...)
 end
 
 function __init__()

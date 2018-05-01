@@ -23,12 +23,12 @@ class JuliaNameSpace(object):
             return self.__julia.eval(jl_name(name))
 
 
-def customized_ipython():
+def customized_ipython(**kwargs):
     from traitlets.config import Config
     import IPython
     from julia import Julia
 
-    julia = Julia()
+    julia = Julia(**kwargs)
     Main = JuliaNameSpace(julia)
     user_ns = dict(
         julia=julia,
