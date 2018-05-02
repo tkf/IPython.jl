@@ -20,7 +20,7 @@ end
 
 # Register keybind '.' in Julia REPL:
 
-function init_repl_if_not()
+function init_repl_if_not(; _init_repl=init_repl)
     active_repl = try
         Base.active_repl
     catch err
@@ -29,7 +29,7 @@ function init_repl_if_not()
     end
 
     if isinteractive() && typeof(active_repl) != Base.REPL.BasicREPL
-        init_repl(active_repl)
+        _init_repl(active_repl)
     end
 end
 # See: https://github.com/JuliaInterop/RCall.jl/blob/master/src/setup.jl

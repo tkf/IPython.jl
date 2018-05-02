@@ -1,13 +1,8 @@
 # module TestIPython
 
-using IPython
-import PyCall
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
+include("preamble.jl")
 
+import PyCall
 @show PyCall.pyprogramname
 @show PyCall.pyversion
 @show PyCall.libpython
@@ -20,5 +15,7 @@ ipy_main = ipy_opts["user_ns"]["Main"]
     ipy_main[:x] = 17061
     @test x == 17061
 end
+
+include("test_julia_repl.jl")
 
 # end  # module
