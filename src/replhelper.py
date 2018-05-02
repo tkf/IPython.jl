@@ -28,9 +28,8 @@ class JuliaNameSpace(object):
             return self.__julia.eval(jl_name(name))
 
 
-def customized_ipython(**kwargs):
+def ipython_options(**kwargs):
     from traitlets.config import Config
-    import IPython
     from julia import Julia
 
     julia = Julia(**kwargs)
@@ -43,5 +42,10 @@ def customized_ipython(**kwargs):
     c = Config()
     c.TerminalIPythonApp.display_banner = False
 
+    return dict(user_ns=user_ns, config=c)
+
+
+def customized_ipython(**kwargs):
+    import IPython
     print()
-    IPython.start_ipython(user_ns=user_ns, config=c)
+    IPython.start_ipython(**ipython_options(**kwargs))
