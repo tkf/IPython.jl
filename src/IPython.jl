@@ -17,11 +17,15 @@ function __init__()
     init_repl_if_not()
 end
 
+
+# Register keybind '.' in Julia REPL:
+
 function init_repl_if_not()
     active_repl = try
         Base.active_repl
     catch err
         err isa UndefVarError || rethrow()
+        return
     end
 
     if isinteractive() && typeof(active_repl) != Base.REPL.BasicREPL
