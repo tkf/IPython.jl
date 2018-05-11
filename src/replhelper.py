@@ -41,11 +41,11 @@ Python package {package} cannot be imported from Python interpreter
 Use your favorite method to install {package} or run the following
 command in Julia (which *tries* to the right thing):
 
-    IPython.install_dependency("{package}")
+    IPython.install_dependency("{need_install}")
 
 To find out what this command may execute, run:
 
-    IPython.install_dependency("{package}"; dry_run=true)
+    IPython.install_dependency("{need_install}"; dry_run=true)
 """
 
 ipython_dependency_missing = """

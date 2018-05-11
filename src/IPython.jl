@@ -18,13 +18,14 @@ function __init__()
     init_repl_if_not()
 end
 
+conda_packages = ("ipython", "pytest")
 
 function prefer_condajl(package)
-    PyCall.conda && package == "ipython"
+    PyCall.conda && package in conda_packages
 end
 
 function prefer_pip(package)
-    package in ("ipython", "julia")
+    package in (conda_packages..., "julia")
 end
 
 function install_dependency(package; dry_run=false)
@@ -43,6 +44,15 @@ function install_dependency(package; dry_run=false)
         end
     else
         warn("Installing $package not supported.")
+    end
+end
+
+
+function test_replhelper()
+    command = `$(PyCall.pyprogramname) -m pytest`
+    info(command)
+    cd(@__DIR__) do
+        run(command)
     end
 end
 

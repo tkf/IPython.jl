@@ -18,4 +18,6 @@ end
 
 include("test_julia_repl.jl")
 
+IPython.test_replhelper()
+
 # end  # module
