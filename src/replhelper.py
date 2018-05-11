@@ -60,7 +60,7 @@ def make_instruction(package, need_install=None, **kwargs):
         package=package,
         need_install=need_install or package.lower(),
         python=sys.executable,
-        additional_message='\n',
+        additional_message='',
     ), **kwargs))
 
 

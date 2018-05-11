@@ -1,6 +1,7 @@
 import pytest
 
-from replhelper import print_instruction_on_import_error, package_name
+from replhelper import print_instruction_on_import_error, package_name, \
+    make_instruction, make_dependency_missing_instruction
 
 
 def raise_ImportError(name):
@@ -53,3 +54,13 @@ def test_package_name():
         import __NON_EXISTING_PACKAGE__
         assert __NON_EXISTING_PACKAGE__  # silence pyflakes
     assert package_name(excinfo.value) == '__NON_EXISTING_PACKAGE__'
+
+
+def test_smoke_make_instruction():
+    print(make_instruction('julia'))
+    # Print it so that it can be checked by eyes with `pytest -s`.
+
+
+def test_smoke_make_dependency_missing_instruction():
+    import IPython
+    print(make_dependency_missing_instruction(IPython, 'traitlets'))
