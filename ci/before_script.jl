@@ -8,14 +8,9 @@ Pkg.clone(pwd())
 info("Pkg.build(IPython)")
 Pkg.build("IPython")
 
-info("Conda.add(ipython)")
-using Conda
-Conda.add("ipython")
-
-using PyCall
-install_pyjulia = `$(PyCall.pyprogramname) -m pip install julia`
-info(install_pyjulia)
-run(install_pyjulia)
+using IPython
+IPython.install_dependency("ipython")
+IPython.install_dependency("julia")
 
 info("show_versions.jl")
 include("show_versions.jl")

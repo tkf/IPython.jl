@@ -2,6 +2,7 @@ module IPython
 
 using Base: LineEdit
 using PyCall
+import Conda
 
 function _start_ipython(name; kwargs...)
     pyimport("replhelper")[name](;
@@ -15,6 +16,34 @@ start_ipython(; kwargs...) = _start_ipython(:customized_ipython; kwargs...)
 function __init__()
     unshift!(PyVector(pyimport("sys")["path"]), @__DIR__)
     init_repl_if_not()
+end
+
+
+function prefer_condajl(package)
+    PyCall.conda && package == "ipython"
+end
+
+function prefer_pip(package)
+    package in ("ipython", "julia")
+end
+
+function install_dependency(package; dry_run=false)
+    if prefer_condajl(package)
+        info("Installing $package via Conda.jl")
+        info("Conda.add($package)")
+        if ! dry_run
+            Conda.add(package)
+        end
+    elseif prefer_pip(package)
+        info("Installing $package for $(PyCall.pyprogramname)")
+        pip_install = `$(PyCall.pyprogramname) -m pip install $package`
+        info(pip_install)
+        if ! dry_run
+            run(pip_install)
+        end
+    else
+        warn("Installing $package not supported.")
+    end
 end
 
 
