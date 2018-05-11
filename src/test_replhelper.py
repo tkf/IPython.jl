@@ -51,4 +51,5 @@ def test_unexpected_exception():
 def test_package_name():
     with pytest.raises(ImportError) as excinfo:
         import __NON_EXISTING_PACKAGE__
+        assert __NON_EXISTING_PACKAGE__  # silence pyflakes
     assert package_name(excinfo.value) == '__NON_EXISTING_PACKAGE__'
