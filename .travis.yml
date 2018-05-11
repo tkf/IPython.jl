@@ -6,6 +6,9 @@ os:
 julia:
   - 0.6
   # - nightly
+env:
+  - CONDA_JL_VERSION="2"
+  - CONDA_JL_VERSION="3"
 notifications:
   email: false
 git:
