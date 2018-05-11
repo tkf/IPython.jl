@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 def jl_name(name):
     if name.endswith('_b'):
         return name[:-2] + '!'
@@ -48,5 +51,5 @@ def ipython_options(**kwargs):
 
 def customized_ipython(**kwargs):
     import IPython
-    print('')
+    print()
     IPython.start_ipython(**ipython_options(**kwargs))
