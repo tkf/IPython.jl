@@ -74,21 +74,35 @@ def make_dependency_missing_instruction(IPython, dependency):
         ))
 
 
+def package_name(err):
+    try:
+        return err.name
+    except AttributeError:
+        # Python 2 support:
+        prefix = 'No module named '
+        message = str(err)
+        if message.startswith(prefix):
+            return message[len(prefix):].rstrip()
+    raise ValueError('Cannot determine missing package for error {}'
+                     .format(err))
+
+
 def print_instruction_on_import_error(f):
     def wrapped(*args, **kwargs):
         try:
             return f(*args, **kwargs)
         except ImportError as err:
-            if err.name in ('IPython', 'julia'):
-                print(make_instruction(err.name))
+            name = package_name(err)
+            if name in ('IPython', 'julia'):
+                print(make_instruction(name))
                 return
-            if err.name == 'traitlets':
+            if name == 'traitlets':
                 try:
                     import IPython
                 except ImportError:
                     print(make_instruction('IPython'))
                     return
-                print(make_dependency_missing_instruction(IPython, err.name))
+                print(make_dependency_missing_instruction(IPython, name))
                 return
             raise
     return wrapped

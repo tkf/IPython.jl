@@ -1,12 +1,19 @@
 import pytest
 
-from replhelper import print_instruction_on_import_error
+from replhelper import print_instruction_on_import_error, package_name
+
+
+def raise_ImportError(name):
+    try:
+        raise ImportError(name=name)
+    except TypeError:
+        raise ImportError('No module named {}'.format(name))
 
 
 def test_ipython_not_found(capsys):
     @print_instruction_on_import_error
     def ipython_not_found():
-        raise ImportError(name='IPython')
+        raise_ImportError('IPython')
 
     ipython_not_found()
 
@@ -19,7 +26,7 @@ def test_ipython_not_found(capsys):
 def test_julia_not_found(capsys):
     @print_instruction_on_import_error
     def julia_not_found():
-        raise ImportError(name='julia')
+        raise_ImportError('julia')
 
     julia_not_found()
 
@@ -39,3 +46,9 @@ def test_unexpected_exception():
 
     with pytest.raises(Unexpected):
         exception()
+
+
+def test_package_name():
+    with pytest.raises(ImportError) as excinfo:
+        import __NON_EXISTING_PACKAGE__
+    assert package_name(excinfo.value) == '__NON_EXISTING_PACKAGE__'
