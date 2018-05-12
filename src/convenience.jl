@@ -53,3 +53,42 @@ function pyversion(name)
     end
     return _pyversion(name)
 end
+
+
+conda_packages = ("ipython", "pytest")
+
+function prefer_condajl(package)
+    PyCall.conda && package in conda_packages
+end
+
+function prefer_pip(package)
+    package in (conda_packages..., "julia")
+end
+
+function install_dependency(package; dry_run=false)
+    if prefer_condajl(package)
+        info("Installing $package via Conda.jl")
+        info("Conda.add($package)")
+        if ! dry_run
+            Conda.add(package)
+        end
+    elseif prefer_pip(package)
+        info("Installing $package for $(PyCall.pyprogramname)")
+        pip_install = `$(PyCall.pyprogramname) -m pip install $package`
+        info(pip_install)
+        if ! dry_run
+            run(pip_install)
+        end
+    else
+        warn("Installing $package not supported.")
+    end
+end
+
+
+function test_replhelper()
+    command = `$(PyCall.pyprogramname) -m pytest`
+    info(command)
+    cd(@__DIR__) do
+        run(command)
+    end
+end
