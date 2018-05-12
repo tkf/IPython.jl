@@ -35,15 +35,15 @@ class JuliaNameSpace(object):
 
 instruction_template = """
 
-Python package {package} cannot be imported from Python interpreter
+Python package "{package}" cannot be imported from Python interpreter
 {python}.
 {additional_message}
-Use your favorite method to install {package} or run the following
+Use your favorite method to install "{need_install}" or run the following
 command in Julia (which *tries* to the right thing):
 
     IPython.install_dependency("{need_install}")
 
-It prints the installation command to be executed and prompt your
+It prints the installation command to be executed and prompts your
 input (yes/no) before really executing it.
 """
 

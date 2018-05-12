@@ -19,7 +19,7 @@ def test_ipython_not_found(capsys):
     ipython_not_found()
 
     out, err = capsys.readouterr()
-    assert 'Python package IPython cannot be imported' in out
+    assert 'Python package "IPython" cannot be imported' in out
     assert 'IPython.install_dependency("ipython")' in out
     assert err == ""
 
@@ -32,7 +32,7 @@ def test_julia_not_found(capsys):
     julia_not_found()
 
     out, err = capsys.readouterr()
-    assert 'Python package julia cannot be imported' in out
+    assert 'Python package "julia" cannot be imported' in out
     assert 'IPython.install_dependency("julia")' in out
     assert err == ""
 
