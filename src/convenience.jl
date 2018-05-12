@@ -77,6 +77,11 @@ function prefer_condajl(package)
     PyCall.conda && package in conda_packages
 end
 
+function prefer_conda(package)
+    isfile(joinpath(dirname(PyCall.pyprogramname), "conda")) &&
+        package in conda_packages
+end
+
 function prefer_pip(package)
     package in (conda_packages..., "julia")
 end
@@ -87,6 +92,15 @@ function install_dependency(package; force=false, dry_run=false)
         info("Conda.add($package)")
         if !dry_run && (force || yes_or_no())
             Conda.add(package)
+        end
+    elseif prefer_conda(package)
+        conda = joinpath(dirname(PyCall.pyprogramname), "conda")
+        info("Installing $package with $conda")
+        prefix = dirname(dirname(PyCall.pyprogramname))
+        installer = `$conda install --prefix $prefix $package`
+        info(installer)
+        if !dry_run && (force || yes_or_no())
+            run(installer)
         end
     elseif prefer_pip(package)
         info("Installing $package for $(PyCall.pyprogramname)")
