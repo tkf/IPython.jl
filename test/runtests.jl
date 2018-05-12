@@ -2,11 +2,7 @@
 
 include("preamble.jl")
 
-import PyCall
-@show PyCall.pyprogramname
-@show PyCall.pyversion
-@show PyCall.libpython
-@show PyCall.conda
+IPython.envinfo()
 
 ipy_opts = @time IPython._start_ipython(:ipython_options)
 ipy_main = ipy_opts["user_ns"]["Main"]
@@ -17,6 +13,7 @@ ipy_main = ipy_opts["user_ns"]["Main"]
 end
 
 include("test_julia_repl.jl")
+include("test_convenience.jl")
 
 IPython.test_replhelper()
 

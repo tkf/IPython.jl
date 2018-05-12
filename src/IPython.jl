@@ -18,6 +18,7 @@ function __init__()
     init_repl_if_not()
 end
 
+
 conda_packages = ("ipython", "pytest")
 
 function prefer_condajl(package)
@@ -91,5 +92,7 @@ function init_repl(repl)
                                                   ipy_prompt_keymap)
 end
 # See: https://github.com/JuliaInterop/RCall.jl/blob/master/src/RPrompt.jl
+
+include("convenience.jl")
 
 end # module

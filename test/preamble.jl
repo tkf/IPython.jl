@@ -4,4 +4,13 @@ else
     using Test
 end
 
+macro test_nothrow(ex)
+    quote
+        @test begin
+            $(esc(ex))
+            true
+        end
+    end
+end
+
 using IPython
