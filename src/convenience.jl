@@ -72,46 +72,65 @@ end
 
 
 conda_packages = ("ipython", "pytest")
+NOT_INSTALLABLE = (false, "", Void)
 
-function prefer_condajl(package)
-    PyCall.conda && package in conda_packages
+function condajl_installation(package)
+    if PyCall.conda && package in conda_packages
+        message = """
+        Installing $package via Conda.jl
+        Execute?:
+            Conda.add($package)
+        """
+        install = () -> Conda.add(package)
+        return (true, message, install)
+    end
+    return NOT_INSTALLABLE
 end
 
-function prefer_conda(package)
-    isfile(joinpath(dirname(PyCall.pyprogramname), "conda")) &&
-        package in conda_packages
+function conda_installation(package)
+    conda = joinpath(dirname(PyCall.pyprogramname), "conda")
+    if isfile(conda) && package in conda_packages
+        prefix = dirname(dirname(PyCall.pyprogramname))
+        command = `$conda install --prefix $prefix $package`
+        message = """
+        Installing $package with $conda
+        Execute?:
+            $command
+        """
+        install = () -> run(command)
+        return (true, message, install)
+    end
+    return NOT_INSTALLABLE
 end
 
-function prefer_pip(package)
-    package in (conda_packages..., "julia")
+function pip_installation(package)
+    if package in (conda_packages..., "julia")
+        command = `$(PyCall.pyprogramname) -m pip install $package`
+        message = """
+        Installing $package for $(PyCall.pyprogramname)
+        Execute?:
+            $command
+        """
+        install = () -> run(command)
+        return (true, message, install)
+    end
+    return NOT_INSTALLABLE
 end
 
 function install_dependency(package; force=false, dry_run=false)
-    if prefer_condajl(package)
-        info("Installing $package via Conda.jl")
-        info("Conda.add($package)")
-        if !dry_run && (force || yes_or_no())
-            Conda.add(package)
+    for check_installer in [condajl_installation,
+                            conda_installation,
+                            pip_installation]
+        found, message, install =  check_installer(package)
+        if found
+            info(message)
+            if !dry_run && (force || yes_or_no())
+                install()
+            end
+            return
         end
-    elseif prefer_conda(package)
-        conda = joinpath(dirname(PyCall.pyprogramname), "conda")
-        info("Installing $package with $conda")
-        prefix = dirname(dirname(PyCall.pyprogramname))
-        installer = `$conda install --prefix $prefix $package`
-        info(installer)
-        if !dry_run && (force || yes_or_no())
-            run(installer)
-        end
-    elseif prefer_pip(package)
-        info("Installing $package for $(PyCall.pyprogramname)")
-        pip_install = `$(PyCall.pyprogramname) -m pip install $package`
-        info(pip_install)
-        if !dry_run && (force || yes_or_no())
-            run(pip_install)
-        end
-    else
-        warn("Installing $package not supported.")
     end
+    warn("Installing $package not supported.")
 end
 
 
