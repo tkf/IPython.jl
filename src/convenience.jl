@@ -17,15 +17,14 @@ function envinfo(io::IO = STDOUT; verbosity::Int = 1)
 end
 
 function pkg_resources_version(name)
-    pkg_resources = try
-        pyimport("pkg_resources")
+    try
+        return pyimport("pkg_resources")[:get_distribution](name)[:version]
     catch err
-        if ! (err isa PyCall.PyError)
-            rethrow()
+        if err isa PyCall.PyError || err isa KeyError
+            return
         end
-        return
+        rethrow()
     end
-    return pkg_resources[:get_distribution](name)[:version]
 end
 
 function _pyversion(name)

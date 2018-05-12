@@ -7,6 +7,7 @@ include("preamble.jl")
     @test IPython.pyversion("julia") isa String
     @test IPython.pyversion("IPython") isa String
     @test IPython.pyversion("IPython") ==  IPython._pyversion("IPython")
+    @test IPython.pkg_resources_version("__NON_EXISTING__") isa Void
 
     println("vvv DRY RUN vvv")
     @test_nothrow IPython.install_dependency("ipython"; dry_run=true)
