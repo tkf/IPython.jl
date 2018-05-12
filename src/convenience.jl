@@ -120,7 +120,7 @@ function install_dependency(package; force=false, dry_run=false)
     for check_installer in [condajl_installation,
                             conda_installation,
                             pip_installation]
-        found, message, install =  check_installer(package)
+        found, message, install = check_installer(package)
         if found
             info(message)
             if !dry_run && (force || yes_or_no())
