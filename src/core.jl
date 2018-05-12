@@ -1,5 +1,3 @@
-module IPython
-
 using PyCall
 import Conda
 
@@ -16,8 +14,3 @@ function __init__()
     unshift!(PyVector(pyimport("sys")["path"]), @__DIR__)
     init_repl_if_not()
 end
-
-include("convenience.jl")
-include("julia_repl.jl")
-
-end # module
