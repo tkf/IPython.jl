@@ -43,9 +43,8 @@ command in Julia (which *tries* to the right thing):
 
     IPython.install_dependency("{need_install}")
 
-To find out what this command may execute, run:
-
-    IPython.install_dependency("{need_install}"; dry_run=true)
+It prints the installation command to be executed and prompt your
+input (yes/no) before really executing it.
 """
 
 ipython_dependency_missing = """

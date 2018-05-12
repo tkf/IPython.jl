@@ -9,9 +9,9 @@ info("Pkg.build(IPython)")
 Pkg.build("IPython")
 
 using IPython
-IPython.install_dependency("ipython")
-IPython.install_dependency("julia")
-IPython.install_dependency("pytest")
+IPython.install_dependency("ipython"; force=true)
+IPython.install_dependency("julia"; force=true)
+IPython.install_dependency("pytest"; force=true)
 
 info("show_versions.jl")
 include("show_versions.jl")

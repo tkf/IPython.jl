@@ -55,6 +55,22 @@ function pyversion(name)
 end
 
 
+function yes_or_no(prompt = string("Type \"yes\" and press enter if ",
+                                   "you want to run this command.");
+                   input = STDIN,
+                   output = STDOUT)
+    print(output, prompt, " [yes/no]: ")
+    answer = readline(input)
+    if answer == "yes"
+        return true
+    elseif answer == "no"
+        return false
+    end
+    warn("Please enter \"yes\" or  \"no\".  Got: $answer")
+    return false
+end
+
+
 conda_packages = ("ipython", "pytest")
 
 function prefer_condajl(package)
@@ -65,18 +81,18 @@ function prefer_pip(package)
     package in (conda_packages..., "julia")
 end
 
-function install_dependency(package; dry_run=false)
+function install_dependency(package; force=false, dry_run=false)
     if prefer_condajl(package)
         info("Installing $package via Conda.jl")
         info("Conda.add($package)")
-        if ! dry_run
+        if !dry_run && (force || yes_or_no())
             Conda.add(package)
         end
     elseif prefer_pip(package)
         info("Installing $package for $(PyCall.pyprogramname)")
         pip_install = `$(PyCall.pyprogramname) -m pip install $package`
         info(pip_install)
-        if ! dry_run
+        if !dry_run && (force || yes_or_no())
             run(pip_install)
         end
     else
