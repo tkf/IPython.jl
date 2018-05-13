@@ -122,7 +122,20 @@ def ipython_options(**kwargs):
     c.TerminalIPythonApp.display_banner = False
     c.TerminalInteractiveShell.confirm_exit = False
 
+    import IPython
+    if major_version(IPython) == 6:
+        # A workaround for segfault problem on IPython tab completion.
+        # https://github.com/tkf/IPython.jl/issues/7
+        c.IPCompleter.use_jedi = True
+
     return dict(user_ns=user_ns, config=c)
+
+
+def major_version(package):
+    try:
+        return int(package.__version__.split('.', 1)[0])
+    except (AttributeError, ValueError):
+        return -1
 
 
 @print_instruction_on_import_error

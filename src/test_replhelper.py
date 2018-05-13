@@ -1,7 +1,9 @@
+from argparse import Namespace
+
 import pytest
 
 from replhelper import print_instruction_on_import_error, package_name, \
-    make_instruction, make_dependency_missing_instruction
+    make_instruction, make_dependency_missing_instruction, major_version
 
 
 def raise_ImportError(name):
@@ -64,3 +66,29 @@ def test_smoke_make_instruction():
 def test_smoke_make_dependency_missing_instruction():
     import IPython
     print(make_dependency_missing_instruction(IPython, 'traitlets'))
+
+
+def major_version_test_data():
+    package = Namespace()
+    package.__version__ = '6.1'
+    yield package, 6
+
+    package = Namespace()
+    package.__version__ = '3'
+    yield package, 3
+
+    package = Namespace()
+    yield package, -1
+
+    package = Namespace()
+    package.__version__ = 'spam'
+    yield package, -1
+
+    package = Namespace()
+    package.__version__ = None
+    yield package, -1
+
+
+@pytest.mark.parametrize('package, desired', major_version_test_data())
+def test_major_version(package, desired):
+    assert major_version(package) == desired
