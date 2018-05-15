@@ -130,3 +130,12 @@ def customized_ipython(**kwargs):
     import IPython
     print()
     IPython.start_ipython(**ipython_options(**kwargs))
+
+
+@print_instruction_on_import_error
+def customized_ptipython(**kwargs):
+    from ptpython.ipython import embed
+    print()
+    embed(**ipython_options(**kwargs))
+# https://github.com/jonathanslenders/ptpython/blob/master/ptpython/entry_points/run_ptipython.py
+# https://github.com/jonathanslenders/ptpython/blob/master/ptpython/ipython.py
