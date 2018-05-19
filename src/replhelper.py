@@ -130,3 +130,21 @@ def customized_ipython(**kwargs):
     import IPython
     print()
     IPython.start_ipython(**ipython_options(**kwargs))
+
+
+@print_instruction_on_import_error
+def start_python(**kwargs):
+    import code
+    user_ns = ipython_options(**kwargs)['user_ns']
+
+    try:
+        import readline
+        from rlcompleter import Completer
+    except ImportError:
+        print("Module readline not available.")
+    else:
+        readline.set_completer(Completer(user_ns).complete)
+        readline.parse_and_bind("tab: complete")
+
+    print()
+    code.interact(local=user_ns)
