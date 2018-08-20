@@ -29,7 +29,6 @@ First launch of IPython may be slow.
 
 ### Python
 
-* pyjulia
 * IPython
 
 
