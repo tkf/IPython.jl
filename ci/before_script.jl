@@ -18,8 +18,11 @@ Pkg.build("IPython")
 
 using IPython
 IPython.install_dependency("ipython"; force=true)
-IPython.install_dependency("julia"; force=true)
 IPython.install_dependency("pytest"; force=true)
+
+# IPython.install_dependency("julia"; force=true)
+using PyCall
+run(`$(PyCall.pyprogramname) -m pip install "git://github.com/tkf/pyjulia@jl10#egg=julia"`)
 
 @info "show_versions.jl"
 include("show_versions.jl")
