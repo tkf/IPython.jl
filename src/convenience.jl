@@ -73,7 +73,7 @@ function yes_or_no(prompt = string("Type \"yes\" and press enter if ",
     elseif answer == "no"
         return false
     end
-    warn("Please enter \"yes\" or  \"no\".  Got: $answer")
+    @warn "Please enter \"yes\" or  \"no\".  Got: $answer"
     return false
 end
 
@@ -130,20 +130,20 @@ function install_dependency(package; force=false, dry_run=false)
                             pip_installation]
         found, message, install = check_installer(package)
         if found
-            info(message)
+            @info message
             if !dry_run && (force || yes_or_no())
                 install()
             end
             return
         end
     end
-    warn("Installing $package not supported.")
+    @warn "Installing $package not supported."
 end
 
 
 function test_replhelper()
     command = `$(PyCall.pyprogramname) -m pytest`
-    info(command)
+    @info command
     cd(@__DIR__) do
         run(command)
     end
