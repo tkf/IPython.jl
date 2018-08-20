@@ -14,3 +14,4 @@ macro test_nothrow(ex)
 end
 
 using IPython
+using Compat
