@@ -3,7 +3,7 @@ module TestConvenience
 include("preamble.jl")
 
 @testset "Convenience" begin
-    @test_nothrow IPython.envinfo(DevNull)
+    @test_nothrow IPython.envinfo(devnull)
     @test IPython.pyversion("julia") isa String
     @test IPython.pyversion("IPython") isa String
     @test IPython.pyversion("IPython") ==  IPython._pyversion("IPython")
@@ -15,9 +15,9 @@ include("preamble.jl")
     @test_nothrow IPython.install_dependency("spam"; dry_run=true)
     println("^^^ DRY RUN ^^^")
 
-    @test IPython.yes_or_no(input=IOBuffer("yes\n"), output=DevNull)
-    @test IPython.yes_or_no(input=IOBuffer("no\n"), output=DevNull) == false
-    @test IPython.yes_or_no(input=IOBuffer("spam\n"), output=DevNull) == false
+    @test IPython.yes_or_no(input=IOBuffer("yes\n"), output=devnull)
+    @test IPython.yes_or_no(input=IOBuffer("no\n"), output=devnull) == false
+    @test IPython.yes_or_no(input=IOBuffer("spam\n"), output=devnull) == false
 
     @test IPython.condajl_installation("IPython") isa Tuple
     @test IPython.conda_installation("IPython") isa Tuple
