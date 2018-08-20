@@ -1,6 +1,12 @@
-function envinfo(io::IO = STDOUT; verbosity::Int = 1)
+@static if VERSION >= v"0.7.0-"
+    using InteractiveUtils: versioninfo
+else
+    versioninfo(io; verbose=false) = Base.versioninfo(io, verbose)
+end
+
+function envinfo(io::IO = stdout; verbosity::Int = 1)
     if verbosity > 0
-        versioninfo(io, verbosity > 1)
+        versioninfo(io; verbose = verbosity > 1)
         println(io)
     end
     for ex in [:(PyCall.pyprogramname),
@@ -11,7 +17,9 @@ function envinfo(io::IO = STDOUT; verbosity::Int = 1)
                :(pyversion("julia")),
                ]
         Base.show_unquoted(io, ex)
-        println(io, " = ", eval(ex))
+        print(io, " = ")
+        show(io, eval(ex))
+        println(io)
     end
     nothing
 end
@@ -56,8 +64,8 @@ end
 
 function yes_or_no(prompt = string("Type \"yes\" and press enter if ",
                                    "you want to run this command.");
-                   input = STDIN,
-                   output = STDOUT)
+                   input = stdin,
+                   output = stdout)
     print(output, prompt, " [yes/no]: ")
     answer = readline(input)
     if answer == "yes"
@@ -71,7 +79,7 @@ end
 
 
 conda_packages = ("ipython", "pytest")
-NOT_INSTALLABLE = (false, "", Void)
+NOT_INSTALLABLE = (false, "", Nothing)
 
 function condajl_installation(package)
     if PyCall.conda && package in conda_packages

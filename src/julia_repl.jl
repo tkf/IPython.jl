@@ -1,4 +1,9 @@
-using Base: LineEdit
+@static if VERSION >= v"0.7.0-"
+    using REPL
+    using REPL: LineEdit
+else
+    using Base: REPL, LineEdit
+end
 
 # Register keybind '.' in Julia REPL:
 
@@ -10,7 +15,7 @@ function init_repl_if_not(; _init_repl=init_repl)
         return
     end
 
-    if isinteractive() && typeof(active_repl) != Base.REPL.BasicREPL
+    if isinteractive() && typeof(active_repl) != REPL.BasicREPL
         _init_repl(active_repl)
     end
 end
@@ -20,7 +25,7 @@ function init_repl(repl)
     start = function(s, _...)
         if isempty(s) || position(LineEdit.buffer(s)) == 0
             # Force current_module() inside IPython to be Main:
-            eval(Main, :($start_ipython()))
+            Base.eval(Main, :($start_ipython()))
             println()
             LineEdit.edit_clear(s)
         else
