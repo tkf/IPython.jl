@@ -154,6 +154,7 @@ You are using IPython version {IPython.__version__} which is known to
 cause segmentation fault with tab completion.  For segfault-free
 IPython, upgrade to version 7 or above (which may still be in
 development stage depending on the time you read this message).
+Note also that IPython releases after 5.x do not support Python 2.
 
 If you need to install development version of IPython and understand
 what would happen to your Python environment by doing so, executing
