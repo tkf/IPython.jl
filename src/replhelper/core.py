@@ -9,6 +9,12 @@ def jl_name(name):
     return name
 
 
+def py_name(name):
+    if name.endswith('!'):
+        return name[:-1] + '_b'
+    return name
+
+
 class JuliaAPI(object):
 
     def __init__(self, eval_str, set_var):
@@ -34,6 +40,21 @@ class JuliaNameSpace(object):
             return super(JuliaNameSpace, self).__getattr__(name)
         else:
             return self.__julia.eval(jl_name(name))
+
+    @property
+    def __all__(self):
+        names = self.__julia.eval("names(Main)")
+        return list(map(py_name, names))
+
+    def __dir__(self):
+        if sys.version_info.major == 2:
+            names = set()
+        else:
+            names = set(super(JuliaNameSpace, self).__dir__())
+        names.update(self.__all__)
+        return list(names)
+    # Override __dir__ method so that completing member names work
+    # well in Python REPLs like IPython.
 
 
 instruction_template = """
