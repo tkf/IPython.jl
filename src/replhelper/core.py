@@ -3,6 +3,8 @@ from __future__ import print_function
 import warnings
 import sys
 
+from .wrappers import JuliaObject
+
 
 def jl_name(name):
     if name.endswith('_b'):
@@ -18,9 +20,23 @@ def py_name(name):
 
 class JuliaAPI(object):
 
-    def __init__(self, eval_str, set_var):
+    def __init__(self, eval_str, set_var, jlwrap_prototype, getproperty):
         self.eval = eval_str
         self.set_var = set_var
+        self.jlwrap_type = type(jlwrap_prototype)
+        self.getproperty = getproperty
+
+    def isjlwrap(self, obj):
+        return isinstance(obj, self.jlwrap_type)
+
+    def maybe_wrap(self, obj):
+        if self.isjlwrap(obj):
+            return JuliaObject(obj, self)
+        else:
+            return obj
+
+    def getattr(self, obj, name):
+        return self.maybe_wrap(self.getproperty(obj, jl_name(name)))
 
 
 class JuliaNameSpace(object):
@@ -29,6 +45,9 @@ class JuliaNameSpace(object):
         self.__julia = julia
 
     eval = property(lambda self: self.__julia.eval)
+
+    def __getitem__(self, code):
+        return self.__julia.maybe_wrap(self.__julia.eval(code))
 
     def __setattr__(self, name, value):
         if name.startswith('_'):
@@ -40,7 +59,8 @@ class JuliaNameSpace(object):
         if name.startswith('_'):
             return super(JuliaNameSpace, self).__getattr__(name)
         else:
-            return self.__julia.eval(jl_name(name))
+            Main = self.__julia.eval('Main')
+            return self.__julia.getattr(Main, name)
 
     @property
     def __all__(self):

@@ -16,10 +16,20 @@ function set_var(name::Symbol, value)
     nothing
 end
 
+@static if VERSION < v"0.7-"
+    _getproperty(value, name) = getfield(value, Symbol(name))
+else
+    _getproperty(value, name) = getproperty(value, Symbol(name))
+end
+
+struct _jlwrap_type end  # a type that would be wrapped as jlwrap by PyCall
+
 function _start_ipython(name; kwargs...)
     pyimport("replhelper")[name](;
         eval_str = eval_str,
         set_var = set_var,
+        jlwrap_prototype = _jlwrap_type(),
+        getproperty = _getproperty,
         kwargs...)
 end
 
