@@ -9,25 +9,31 @@ def jl_name(name):
     return name
 
 
-class JuliaNameSpace(object):
+class JuliaAPI(object):
 
     def __init__(self, eval_str, set_var):
-        self.__eval = eval_str
-        self.__set = set_var
+        self.eval = eval_str
+        self.set_var = set_var
 
-    eval = property(lambda self: self.__eval)
+
+class JuliaNameSpace(object):
+
+    def __init__(self, julia):
+        self.__julia = julia
+
+    eval = property(lambda self: self.__julia.eval)
 
     def __setattr__(self, name, value):
         if name.startswith('_'):
             super(JuliaNameSpace, self).__setattr__(name, value)
         else:
-            self.__set(name, value)
+            self.__julia.set_var(name, value)
 
     def __getattr__(self, name):
         if name.startswith('_'):
             return super(JuliaNameSpace, self).__getattr__(name)
         else:
-            return self.__eval(jl_name(name))
+            return self.__julia.eval(jl_name(name))
 
 
 instruction_template = """
@@ -107,7 +113,7 @@ def print_instruction_on_import_error(f):
 def ipython_options(**kwargs):
     from traitlets.config import Config
 
-    Main = JuliaNameSpace(**kwargs)
+    Main = JuliaNameSpace(JuliaAPI(**kwargs))
     user_ns = dict(
         Main=Main,
     )
