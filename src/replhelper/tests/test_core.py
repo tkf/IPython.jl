@@ -1,6 +1,6 @@
 import pytest
 
-from replhelper import print_instruction_on_import_error, package_name, \
+from ..core import print_instruction_on_import_error, package_name, \
     make_instruction, make_dependency_missing_instruction
 
 
