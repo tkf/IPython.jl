@@ -111,7 +111,10 @@ function conda_installation(package)
 end
 
 function pip_installation(package)
-    if package in (conda_packages..., "julia")
+    if package in (conda_packages..., "ipython-dev", "julia")
+        if package == "ipython-dev"
+            package = "git+git://github.com/ipython/ipython#egg=ipython"
+        end
         command = `$(PyCall.pyprogramname) -m pip install $package`
         message = """
         Installing $package for $(PyCall.pyprogramname)

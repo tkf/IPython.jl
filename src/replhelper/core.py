@@ -154,6 +154,15 @@ You are using IPython version {IPython.__version__} which is known to
 cause segmentation fault with tab completion.  For segfault-free
 IPython, upgrade to version 7 or above (which may still be in
 development stage depending on the time you read this message).
+
+If you need to install development version of IPython and understand
+what would happen to your Python environment by doing so, executing
+the following command in Julia may help:
+
+    IPython.install_dependency("ipython-dev")
+
+It prints the installation command to be executed and prompts your
+input (yes/no) before really executing it.
 """
 
 segfault_warned = False
