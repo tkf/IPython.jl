@@ -5,7 +5,12 @@ include("preamble.jl")
 @testset "Convenience" begin
     @test_nothrow IPython.envinfo(devnull)
     @test IPython.pyversion("IPython") isa String
-    @test IPython.pyversion("IPython") ==  IPython._pyversion("IPython")
+    if occursin(".dev", IPython._pyversion("IPython"))
+        @test startswith(IPython.pyversion("IPython"),
+                         IPython._pyversion("IPython"))
+    else
+        @test IPython.pyversion("IPython") == IPython._pyversion("IPython")
+    end
     @test IPython.pyversion("__NON_EXISTING__") isa Nothing
 
     println("vvv DRY RUN vvv")
