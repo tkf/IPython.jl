@@ -112,10 +112,11 @@ end
 
 function pip_installation(package)
     if package in (conda_packages..., "ipython-dev", "julia")
+        args = package
         if package == "ipython-dev"
-            package = "git+git://github.com/ipython/ipython#egg=ipython"
+            args = `--upgrade "git+git://github.com/ipython/ipython#egg=ipython"`
         end
-        command = `$(PyCall.pyprogramname) -m pip install $package`
+        command = `$(PyCall.pyprogramname) -m pip install $args`
         message = """
         Installing $package for $(PyCall.pyprogramname)
         Execute?:
