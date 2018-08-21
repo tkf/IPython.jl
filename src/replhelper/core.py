@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import warnings
 import sys
 
 
@@ -146,8 +147,24 @@ def ipython_options(**kwargs):
     return dict(user_ns=user_ns, config=c)
 
 
+segfault_warning = """\
+Segmentation fault warning.
+
+You are using IPython version {IPython.__version__} which is known to
+cause segmentation fault with tab completion.  For segfault-free
+IPython, upgrade to version 7 or above (which may still be in
+development stage depending on the time you read this message).
+"""
+
+segfault_warned = False
+
+
 @print_instruction_on_import_error
 def customized_ipython(**kwargs):
+    global segfault_warned
     import IPython
     print()
+    if int(IPython.__version__.split('.', 1)[0]) < 7 and not segfault_warned:
+        warnings.warn(segfault_warning.format(**vars()))
+        segfault_warned = True
     IPython.start_ipython(**ipython_options(**kwargs))
