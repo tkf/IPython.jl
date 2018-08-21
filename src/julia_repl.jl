@@ -1,9 +1,5 @@
-@static if VERSION >= v"0.7.0-"
-    using REPL
-    using REPL: LineEdit
-else
-    using Base: REPL, LineEdit
-end
+using REPL
+using REPL: LineEdit
 
 # Register keybind '.' in Julia REPL:
 

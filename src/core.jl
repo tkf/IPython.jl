@@ -2,7 +2,7 @@ using PyCall
 import Conda
 
 julia_exepath() =
-    joinpath(VERSION < v"0.7.0-DEV.3073" ? JULIA_HOME : Base.Sys.BINDIR,
+    joinpath(Base.Sys.BINDIR,
              Base.julia_exename())
 
 function eval_str(code::String)

@@ -1,10 +1,4 @@
-@static if VERSION >= v"0.7.0-"
-    using Pkg
-else
-    macro info(x)
-        :(info($(esc(x))))
-    end
-end
+using Pkg
 
 # Let PyCall.jl use Python interpreter from Conda.jl
 # See: https://github.com/JuliaPy/PyCall.jl

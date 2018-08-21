@@ -1,8 +1,4 @@
-@static if VERSION >= v"0.7.0-"
-    using InteractiveUtils: versioninfo
-else
-    versioninfo(io; verbose=false) = Base.versioninfo(io, verbose)
-end
+using InteractiveUtils: versioninfo
 
 function envinfo(io::IO = stdout; verbosity::Int = 1)
     if verbosity > 0
