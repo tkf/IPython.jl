@@ -27,7 +27,7 @@ function init_repl(repl)
             # Force current_module() inside IPython to be Main:
             Base.eval(Main, :($start_ipython()))
             println()
-            LineEdit.edit_clear(s)
+            LineEdit.refresh_line(s)
         else
             LineEdit.edit_insert(s, '.')
         end
