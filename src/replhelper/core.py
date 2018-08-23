@@ -235,6 +235,7 @@ def ipython_options(**kwargs):
 
     c = Config()
     c.TerminalIPythonApp.display_banner = False
+    c.TerminalIPythonApp.matplotlib = None  # don't close figures
     c.TerminalInteractiveShell.confirm_exit = False
 
     return dict(user_ns=user_ns, config=c)
