@@ -234,12 +234,12 @@ def customized_ipython(**kwargs):
 def revise():
     """Ad-hoc hot reload."""
     import replhelper
+    Main = _Main
     reload(replhelper.wrappers)
     reload(replhelper.core)
-
-    if _Main is not None:
-        _Main.__class__ = replhelper.core.JuliaNameSpace
-        _Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
-        replhelper.core._Main = _Main
-
     reload(replhelper)
+
+    if Main is not None:
+        Main.__class__ = replhelper.core.JuliaNameSpace
+        Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
+        replhelper.core._Main = Main
