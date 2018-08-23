@@ -86,7 +86,8 @@ class JuliaNameSpace(object):
 
     @property
     def __all__(self):
-        names = self.__julia.eval("names(Main)")
+        Main = self.__julia.eval("Main")
+        names = self.__julia.dir(Main)
         return list(map(py_name, names))
 
     def __dir__(self):
