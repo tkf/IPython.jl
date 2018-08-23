@@ -1,9 +1,22 @@
+# TODO: replace object.__XXX__(self, ...) with super().__XXX__(...)
+# once Python 2 support is removed.
+
 from __future__ import print_function
 
 import warnings
 import sys
 
+try:
+    from importlib import reload
+except ImportError:
+    try:
+        from imp import reload
+    except ImportError:
+        pass  # Python 2?
+
 from .wrappers import JuliaObject
+
+_Main = None
 
 
 def jl_name(name):
@@ -29,7 +42,7 @@ class JuliaAPI(object):
 
     def __getattr__(self, name):
         try:
-            super(JuliaAPI, self).__getattr__(name)
+            object.__getattr__(self, name)
         except AttributeError:
             return self.eval(self.api, name)
 
@@ -58,13 +71,15 @@ class JuliaNameSpace(object):
 
     def __setattr__(self, name, value):
         if name.startswith('_'):
-            super(JuliaNameSpace, self).__setattr__(name, value)
+            object.__setattr__(self, name, value)
+            # super().__setattr__(name, value)
         else:
             self.__julia.set_var(name, value)
 
     def __getattr__(self, name):
         if name.startswith('_'):
-            return super(JuliaNameSpace, self).__getattr__(name)
+            return object.__getattr__(self, name)
+            # return super().__getattr__(name)
         else:
             Main = self.__julia.eval('Main')
             return self.__julia.getattr(Main, name)
@@ -78,7 +93,7 @@ class JuliaNameSpace(object):
         if sys.version_info.major == 2:
             names = set()
         else:
-            names = set(super(JuliaNameSpace, self).__dir__())
+            names = set(super().__dir__())
         names.update(self.__all__)
         return list(names)
     # Override __dir__ method so that completing member names work
@@ -160,9 +175,10 @@ def print_instruction_on_import_error(f):
 
 
 def ipython_options(**kwargs):
+    global _Main
     from traitlets.config import Config
 
-    Main = JuliaNameSpace(JuliaAPI(**kwargs))
+    _Main = Main = JuliaNameSpace(JuliaAPI(**kwargs))
     user_ns = dict(
         Main=Main,
     )
@@ -205,3 +221,17 @@ def customized_ipython(**kwargs):
         warnings.warn(segfault_warning.format(**vars()))
         segfault_warned = True
     IPython.start_ipython(**ipython_options(**kwargs))
+
+
+def revise():
+    """Ad-hoc hot reload."""
+    import replhelper
+    reload(replhelper.wrappers)
+    reload(replhelper.core)
+
+    if _Main is not None:
+        _Main.__class__ = replhelper.core.JuliaNameSpace
+        _Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
+        replhelper.core._Main = _Main
+
+    reload(replhelper)
