@@ -20,11 +20,18 @@ def py_name(name):
 
 class JuliaAPI(object):
 
-    def __init__(self, eval_str, set_var, jlwrap_prototype, getproperty):
+    def __init__(self, eval_str, api):
         self.eval = eval_str
-        self.set_var = set_var
-        self.jlwrap_type = type(jlwrap_prototype)
-        self.getproperty = getproperty
+        self.api = api
+        # After this point, self.<julia_name> works:
+        self.jlwrap_type = type(self.get_jlwrap_prototype())
+        self.getproperty = self.getproperty_str
+
+    def __getattr__(self, name):
+        try:
+            super(JuliaAPI, self).__getattr__(name)
+        except AttributeError:
+            return self.eval(self.api, name)
 
     def isjlwrap(self, obj):
         return isinstance(obj, self.jlwrap_type)

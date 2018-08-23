@@ -26,7 +26,7 @@ class JuliaObject(object):
         return self.__julia.getattr(self.__jlwrap, name)
 
     def __dir__(self):
-        return self.__julia.eval("propertynames")(self.__jlwrap)
+        return self.__julia.dir(self.__jlwrap)
 
     def __call__(self, *args, **kwargs):
         return self.__jlwrap(*args, **kwargs)
