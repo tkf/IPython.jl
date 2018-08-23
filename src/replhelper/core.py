@@ -46,6 +46,13 @@ class JuliaAPI(object):
         except AttributeError:
             return self.eval(self.api, name)
 
+    def py_names(self, obj):
+        names = self.dir(obj)
+        names = map(py_name, names)
+        if sys.version_info.major == 3:
+            names = filter(str.isidentifier, names)
+        return names
+
     def isjlwrap(self, obj):
         return isinstance(obj, self.jlwrap_type)
 
@@ -87,8 +94,7 @@ class JuliaNameSpace(object):
     @property
     def __all__(self):
         Main = self.__julia.eval("Main")
-        names = self.__julia.dir(Main)
-        return list(map(py_name, names))
+        return list(self.__julia.py_names(Main))
 
     def __dir__(self):
         if sys.version_info.major == 2:
