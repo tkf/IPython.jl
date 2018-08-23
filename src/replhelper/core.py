@@ -69,13 +69,44 @@ class JuliaAPI(object):
 
 class JuliaNameSpace(object):
 
+    """
+    Interface to Julia name space.
+
+    Examples::
+
+        Main.xs = [1, 2, 3]
+        Main.map(lambda x: x ** 2, [1, 2, 3])
+        Main.eval("Vector{Int}")([1.0, 2.0, 3.0])
+        Main.eval("x -> x.^2")([1, 2, 3])
+
+    """
+
     def __init__(self, julia):
-        self.__julia = julia
+        self.__julia = julia  # JuliaAPI
 
-    eval = property(lambda self: self.__julia.eval)
+    def eval(self, code, wrap=True):
+        """
+        Evaluate `code` in `Main` scope of Julia.
 
-    def __getitem__(self, code):
-        return self.__julia.maybe_wrap(self.__julia.eval(code))
+        Parameters
+        ----------
+        code : str
+            Julia code to be evaluated.
+
+        Keyword Arguments
+        -----------------
+        wrap : bool
+            If `True` (default), wrap the output by a Python interface
+            (`JuliaObject`) for some appropriate Julia objects.
+
+        """
+        ans = self.__julia.eval(code)
+        if wrap:
+            return self.__julia.maybe_wrap(ans)
+        return ans
+
+    # def __getitem__(self, code):
+    #     return self.eval(code)
 
     def __setattr__(self, name, value):
         if name.startswith('_'):

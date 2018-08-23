@@ -6,6 +6,20 @@ unspecified = object()
 
 
 class JuliaObject(object):
+    """
+    Python interface for Julia object.
+
+    Parameters
+    ----------
+    jlwrap : PyCall.jlwrap
+        Julia object wrapped as PyCall.jlwrap.
+    julia : JuliaAPI
+        Python interface for calling Julia functions.
+
+        See:
+        ./core.py
+        ../julia_api.jl
+    """
 
     def __init__(self, jlwrap, julia):
         self.__jlwrap = jlwrap
@@ -99,6 +113,9 @@ class JuliaObject(object):
 def make_wrapper(fun):
     @functools.wraps(fun)
     def wrapper(self, *args, **kwds):
+        # Peal off all arguments if they are wrapped by JuliaObject.
+        # This is required for, e.g., Main.map(Main.identity, range(3))
+        # to work.
         peal = self._JuliaObject__peal
         args = [peal(a) for a in args]
         kwds = {k: peal(v) for (k, v) in kwds.items()}
