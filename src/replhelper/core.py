@@ -42,7 +42,8 @@ class JuliaAPI(object):
 
     def __getattr__(self, name):
         try:
-            object.__getattr__(self, name)
+            # return super().__getattr__(name, value)
+            return object.__getattr__(self, name)
         except AttributeError:
             return self.eval(self.api, name)
 
