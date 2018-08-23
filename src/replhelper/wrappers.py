@@ -131,10 +131,11 @@ def make_wrapper(fun):
 
 
 for name, fun in vars(JuliaObject).items():
-    if name in ('__module__', '__init__'):
+    if name in ("__module__", "__init__", "__doc__"):
         continue
     if name.startswith('_JuliaObject__'):
         continue
     if not isinstance(fun, FunctionType):
         continue
+    # TODO: skip single-argument (i.e., `self`-only) methods (optimization)
     setattr(JuliaObject, name, make_wrapper(fun))
