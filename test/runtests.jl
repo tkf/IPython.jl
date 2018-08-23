@@ -15,6 +15,6 @@ end
 include("test_julia_repl.jl")
 include("test_convenience.jl")
 
-IPython.test_replhelper()
+IPython.test_replhelper(inprocess=true)
 
 # end  # module

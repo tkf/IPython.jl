@@ -3,8 +3,9 @@
 
 from __future__ import print_function
 
-import warnings
 import sys
+import types
+import warnings
 
 try:
     from importlib import reload
@@ -213,6 +214,12 @@ def print_instruction_on_import_error(f):
     return wrapped
 
 
+def get_api(main):
+    if main is None:
+        return None
+    return main._JuliaNameSpace__julia
+
+
 def get_main(**kwargs):
     """
     Create or get cached `Main`.
@@ -286,3 +293,15 @@ def revise():
         Main.__class__ = replhelper.core.JuliaNameSpace
         Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
         replhelper.core._Main = Main
+
+    try:
+        replhelper.tests
+    except AttributeError:
+        return
+
+    # *Try* reloading modules `replhelper.tests.*`.  If there are
+    # dependencies between those modules, it's not going to work.
+    for (name, module) in sorted(vars(replhelper.tests).items(),
+                                 key=lambda pair: pair[0]):
+        if isinstance(module, types.ModuleType):
+            reload(module)
