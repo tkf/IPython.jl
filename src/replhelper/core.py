@@ -45,7 +45,7 @@ class JuliaAPI(object):
             # return super().__getattr__(name, value)
             return object.__getattr__(self, name)
         except AttributeError:
-            return self.eval(self.api, name)
+            return self.eval(self.api, jl_name(name))
 
     def py_names(self, obj):
         names = self.dir(obj)

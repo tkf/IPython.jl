@@ -54,13 +54,19 @@ class JuliaObject(object):
         return len(self.__jlwrap)
 
     def __getitem__(self, key):
-        return self.__jlwrap[key]
+        if not isinstance(key, tuple):
+            key = (key,)
+        return self.__julia.getindex(self.__jlwrap, *key)
 
     def __setitem__(self, key, value):
-        self.__jlwrap[key] = value
+        if not isinstance(key, tuple):
+            key = (key,)
+        self.__julia.setindex_b(self.__jlwrap, value, *key)
 
     def __delitem__(self, key):
-        del self.__jlwrap[key]
+        if not isinstance(key, tuple):
+            key = (key,)
+        self.__julia.delete_b(self.__jlwrap, *key)
 
     def __contains__(self, item):
         return self.__julia.eval("in")(self.__jlwrap, item)
