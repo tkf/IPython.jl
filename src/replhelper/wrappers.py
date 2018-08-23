@@ -22,6 +22,7 @@ class JuliaObject(object):
     def __repr__(self):
         return "<{} {}>".format(self.__class__.__name__, self)
 
+    @property
     def __doc__(self):
         return self.__jlwrap.__doc__
 
