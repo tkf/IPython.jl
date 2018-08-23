@@ -34,7 +34,8 @@ class JuliaObject(object):
         return self.__julia.string(self.__jlwrap)
 
     def __repr__(self):
-        return "<{} {}>".format(self.__class__.__name__, self)
+        return "<{} {}>".format(self.__class__.__name__,
+                                self.__julia.repr(self.__jlwrap))
 
     @property
     def __doc__(self):
