@@ -1,10 +1,31 @@
 module JuliaAPI
 
-function eval_str(m::Module, code::String)
-    Base.eval(m, Meta.parse(strip(code)))
+using PyCall: pyjlwrap_new
+
+function eval_str(m::Module, code::String;
+                  # auto_jlwrap = true,
+                  force_jlwrap = false)
+    result = Base.eval(m, Meta.parse(strip(code)))
+    if force_jlwrap
+        return pyjlwrap_new(result)
+    # elseif auto_jlwrap
+    #     return _wrap(result)
+    end
+    return result
 end
 
-eval_str(code::String) = eval_str(Main, code)
+eval_str(code::String; kwargs...) = eval_str(Main, code; kwargs...)
+
+# Not sure if I need it:
+#=
+_wrap(result::Union{
+    # Types to be wrapped:
+    Symbol,
+}) = pyjlwrap_new(result)
+
+_wrap(result) = result
+=#
+
 
 set_var(name::String, value) = set_var(Symbol(name), value)
 

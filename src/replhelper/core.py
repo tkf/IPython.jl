@@ -84,7 +84,7 @@ class JuliaNameSpace(object):
     def __init__(self, julia):
         self.__julia = julia  # JuliaAPI
 
-    def eval(self, code, wrap=True):
+    def eval(self, code, wrap=True, **kwargs):
         """
         Evaluate `code` in `Main` scope of Julia.
 
@@ -100,7 +100,7 @@ class JuliaNameSpace(object):
             (`JuliaObject`) for some appropriate Julia objects.
 
         """
-        ans = self.__julia.eval(code)
+        ans = self.__julia.eval(code, **kwargs)
         if wrap:
             return self.__julia.maybe_wrap(ans)
         return ans
