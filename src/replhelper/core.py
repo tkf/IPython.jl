@@ -213,13 +213,24 @@ def print_instruction_on_import_error(f):
     return wrapped
 
 
-def ipython_options(**kwargs):
+def get_main(**kwargs):
+    """
+    Create or get cached `Main`.
+
+    Caching is required to avoid re-writing to `_Main` when re-entering
+    to IPython session (where `user_ns` would be ignored).
+    """
     global _Main
+    if _Main is None:
+        _Main = JuliaNameSpace(JuliaAPI(**kwargs))
+    return _Main
+
+
+def ipython_options(**kwargs):
     from traitlets.config import Config
 
-    _Main = Main = JuliaNameSpace(JuliaAPI(**kwargs))
     user_ns = dict(
-        Main=Main,
+        Main=get_main(**kwargs),
     )
 
     c = Config()
