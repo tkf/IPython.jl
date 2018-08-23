@@ -17,7 +17,8 @@ class JuliaObject(object):
         return other
 
     def __repr__(self):
-        return "<{} {}>".format(self.__class__.__name__, self.__jlwrap)
+        return "<{} {}>".format(self.__class__.__name__,
+                                self.__julia.string(self.__jlwrap))
 
     def __doc__(self):
         return self.__jlwrap.__doc__
