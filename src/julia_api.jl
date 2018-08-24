@@ -1,5 +1,8 @@
 module JuliaAPI
 
+@static if VERSION >= v"0.7-"
+    import REPL
+end
 using PyCall: pyjlwrap_new
 
 function eval_str(m::Module, code::String;
@@ -51,5 +54,19 @@ end
 struct _jlwrap_type end  # a type that would be wrapped as jlwrap by PyCall
 
 get_jlwrap_prototype() = _jlwrap_type()
+
+@static if VERSION < v"0.7-"
+    completions(_a...; __k...) = String[]
+else
+    function completions(string, pos, context_module = Main)
+        ret, _, should_complete =
+            REPL.completions(string, pos, context_module)
+        if should_complete
+            return map(REPL.completion_text, ret)
+        else
+            return String[]
+        end
+    end
+end
 
 end  # module

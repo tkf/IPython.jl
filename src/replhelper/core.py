@@ -220,6 +220,10 @@ def get_api(main):
     return main._JuliaNameSpace__julia
 
 
+def get_cached_api():
+    return get_api(_Main)
+
+
 def get_main(**kwargs):
     """
     Create or get cached `Main`.
@@ -244,6 +248,11 @@ def ipython_options(**kwargs):
     c.TerminalIPythonApp.display_banner = False
     c.TerminalIPythonApp.matplotlib = None  # don't close figures
     c.TerminalInteractiveShell.confirm_exit = False
+
+    from . import ipyext
+    c.InteractiveShellApp.extensions = [
+        ipyext.__name__,
+    ]
 
     return dict(user_ns=user_ns, config=c)
 
@@ -287,6 +296,7 @@ def revise():
     Main = _Main
     reload(replhelper.wrappers)
     reload(replhelper.core)
+    reload(replhelper.ipyext)
     reload(replhelper)
 
     if Main is not None:
