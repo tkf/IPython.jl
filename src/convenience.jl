@@ -153,13 +153,16 @@ function test_replhelper(args=``; inprocess=false, kwargs...)
     end
 end
 
-function test_replhelper_inprocess(args; revise=true)
+function test_replhelper_inprocess(args; revise=true, check=true)
     IPython._start_ipython(:ipython_options)  # setup replhelper.core._Main
     if revise
         pyimport("replhelper")[:revise]()
     end
     cd(@__DIR__) do
         code = pyimport("pytest")[:main](collect(args))
+        if !check
+            return code
+        end
         if code != 0
             error("$(`pytest $args`) failed with code $code")
         end

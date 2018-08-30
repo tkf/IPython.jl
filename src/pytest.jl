@@ -14,4 +14,10 @@ Examples:
 """
 
 using IPython
-IPython.test_replhelper(`$ARGS`; inprocess=true)
+code = IPython.test_replhelper(
+    `$ARGS`;
+    inprocess = true,
+    revise = false,
+    check = false,
+)
+exit(code)
