@@ -13,6 +13,8 @@ def julia_completer(julia, self, event):
         # When completing "Base.Enums.s" we need to add prefix "Base.Enums"
         prefix = event.symbol.rsplit(".", 1)[0]
         completions = [".".join((prefix, c)) for c in completions]
+    else:
+        completions = list(completions)
     global last_completions, last_event
     last_completions = completions
     last_event = event
