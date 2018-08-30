@@ -1,9 +1,9 @@
 module JuliaAPI
 
-@static if VERSION >= v"0.7-"
-    import REPL
-    import Dates
-end
+using Compat
+using Compat.REPL
+using Compat.Dates
+
 import PyCall
 using PyCall: PyObject, pyjlwrap_new
 
