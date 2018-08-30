@@ -1,12 +1,14 @@
 from .convenience import with_message
-from .core import get_main
+from .core import get_cached_main
+from .core.initializer import APIInitializer
 
 
 def ipython_options(**kwargs):
     from traitlets.config import Config
 
     user_ns = dict(
-        Main=get_main(**kwargs),
+        jl=APIInitializer.instance(**kwargs).api,
+        Main=get_cached_main(),
     )
 
     c = Config()
