@@ -12,7 +12,7 @@ def _unregister_key_bindings():
 
 
 def julia_completer(julia, self, event):
-    pos = event.line.find("Main.eval")
+    pos = event.text_until_cursor.find("Main.eval")
     if pos < 0:
         return []
     pos += len("Main.eval('")  # pos: beginning of Julia code

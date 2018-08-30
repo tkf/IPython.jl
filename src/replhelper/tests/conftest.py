@@ -1,6 +1,7 @@
 import pytest
 
 from ..core import get_cached_main
+from ..core.conftest import julia
 
 
 @pytest.fixture
