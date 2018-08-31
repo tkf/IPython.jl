@@ -11,6 +11,6 @@ def test_peal(Main):
 
 
 def test_wrapped_dict(Main):
-    dct = Main.eval("dct = Dict()", force_jlwrap=True)
+    dct = Main.eval("dict = Dict()", force_jlwrap=True)
     dct["key"] = "value"
-    assert Main.dct == {"key": "value"}
+    assert Main.dict == {"key": "value"}
