@@ -18,13 +18,17 @@ def julia_completer(julia, self, event):
     pos += len("Main.eval('")  # pos: beginning of Julia code
     julia_code = event.line[pos:]
     julia_pos = len(event.text_until_cursor) - pos
-    completions = julia.completions(julia_code, julia_pos)
+
+    # Don't use `julia.completions(julia_code, julia_pos)` here to
+    # avoid aggressive boxing by core.JuliaObject.  PyCall.jl will
+    # copy/convert it to a list of strs (which is fast).
+    completions = julia.eval("completions", wrap=False, scope=julia.api)(
+        julia_code, julia_pos)
+
     if "." in event.symbol:
         # When completing "Base.Enums.s" we need to add prefix "Base.Enums"
         prefix = event.symbol.rsplit(".", 1)[0]
         completions = [".".join((prefix, c)) for c in completions]
-    else:
-        completions = list(completions)
     global last_completions, last_event
     last_completions = completions
     last_event = event
