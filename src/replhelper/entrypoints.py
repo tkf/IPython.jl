@@ -1,6 +1,24 @@
+from textwrap import dedent
+
 from .convenience import with_message
 from .core import get_cached_main
 from .core.initializer import APIInitializer
+
+
+_done = False
+
+def _run_once(ip):
+    global _done
+    if not _done:
+        _done = True
+        post_startup_configuration(ip)
+
+
+def post_startup_configuration(ip):
+    from . import ipyext
+    ip.run_cell(dedent("""
+    %load_ext {ipyext}
+    """.format(ipyext=ipyext.__name__)))
 
 
 def ipython_options(**kwargs):
@@ -16,10 +34,19 @@ def ipython_options(**kwargs):
     c.TerminalIPythonApp.matplotlib = None  # don't close figures
     c.TerminalInteractiveShell.confirm_exit = False
 
-    from . import ipyext
-    c.InteractiveShellApp.extensions = [
-        ipyext.__name__,
-    ]
+    # "-i -c <code_to_run>"
+    c.InteractiveShellApp.code_to_run = """
+    __import__({!r}).{}._run_once(get_ipython())
+    """.strip().format(__name__, __name__.split(".", 1)[-1])
+    c.InteractiveShellApp.force_interact = True  # "-i"
+    #
+    # To not override user's `c.InteractiveShellApp.extensions`
+    # setting, use `c.InteractiveShellApp.code_to_run` to load our
+    # extension.  This is equivalent to passing "-c" option to ipython
+    # CLI so it is likely to be not configured in user's IPython
+    # profile.  However, `code_to_run` will be invoked every time
+    # re-entering to IPython which prints "extension is already
+    # loaded" warning.  `_run_once` wrapper is used to avoid that.
 
     return dict(user_ns=user_ns, config=c)
 
