@@ -1,11 +1,14 @@
 module JuliaAPI
 
-@static if VERSION >= v"0.7-"
-    import REPL
-    import Dates
-end
+using Compat
+using Compat.REPL
+using Compat.Dates
+using Compat.Pkg
+
 import PyCall
 using PyCall: PyObject, pyjlwrap_new
+
+using Requires
 
 
 function eval_str(code::AbstractString;
@@ -29,7 +32,8 @@ const NpyNumber = Union{
 
 
 _wrap(obj::Any) = pyjlwrap_new(obj)
-# Wrap the object if PyCall would convert it to some
+# Wrap the object if it is desirable to _not_ invoke PyCall's
+# automatic conversion.
 
 _wrap(obj::Union{
     Nothing,
@@ -38,6 +42,7 @@ _wrap(obj::Union{
     Array{<: NpyNumber},  # ditto
     AbstractString,  # should it be just String?
     Dates.AbstractTime,
+    IO,
 }) = obj
 # It's OK to include some types that are not supported PyCall.  In
 # that case, those objects are passed through pyjlwrap_new anyway.
@@ -161,6 +166,50 @@ else
         else
             return String[]
         end
+    end
+end
+
+"""
+    start_repl(; <keyword arguments>)
+
+Start Julia REPL.
+
+# Keyword Arguments
+- `interactive::Bool = true`
+- `quiet::Bool = true`
+- `banner::Bool = false`
+- `history_file::Bool = true`
+- `color_set::Bool = false`: "color (configuration is already) set"
+"""
+function start_repl(;
+        interactive::Bool = true,
+        quiet::Bool = true,
+        banner::Bool = false,
+        history_file::Bool = true,
+        color_set::Bool = false,
+        )
+    was_interactive = Base.is_interactive
+    try
+        # Required for Pkg.__init__ to setup the REPL mode:
+        Base.eval(:(is_interactive = $interactive))
+
+        Base.run_main_repl(interactive, quiet, banner, history_file, color_set)
+    finally
+        Base.eval(:(is_interactive = $was_interactive))
+    end
+end
+
+
+function __init__()
+    # Don't wrap JuliaPy wrappers
+    @require Pandas="eadc2687-ae89-51f9-a5d9-86b5a6373a9c" @eval begin
+        _wrap(obj::Pandas.PandasWrapped) = obj
+    end
+    @require SymPy="24249f21-da20-56a4-8eb1-6a02cf4ae2e6" @eval begin
+        _wrap(obj::SymPy.SymbolicObject) = obj
+    end
+    @require PyPlot="d330b81b-6aea-500a-939a-2ce795aea3ee" @eval begin
+        _wrap(obj::PyPlot.Figure) = obj
     end
 end
 

@@ -22,7 +22,7 @@ def test_mimebundle_pyplot(julia):
         PyPlot.plot(1:10)
         obj
     end
-    """)
+    """, wrap=True)
     assert isinstance(obj, JuliaObject)
     format_dict = obj._repr_mimebundle_()
     mimes = set(format_dict)

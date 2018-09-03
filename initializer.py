@@ -38,7 +38,8 @@ def get_api(*args, **kwargs):
     >>> get_api(jl_runtime_path="PATH/TO/CUSTOM/JULIA") # doctest: +SKIP
     <JuliaAPI ...>
     """
-    return APIInitializer.with_pyjulia(*args, **kwargs).api
+    return get_cached_api() or \
+        APIInitializer.with_pyjulia(*args, **kwargs).api
 
 
 def get_cached_api():
