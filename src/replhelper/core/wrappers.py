@@ -40,6 +40,13 @@ Pythonic wrapper of Julia objects.
 
 **Arrays**:
 
+>>> a2d = jlapi.eval("reshape((1:6) .- 1, (2, 3))")
+>>> a2d
+<JuliaObject [0 2 4; 1 3 5]>
+>>> a2d[0, 1]
+2
+>>> jlapi.eval("[1, 2, 3]")
+array([1, 2, 3], dtype=int64)
 >>> arr = jlapi.eval("[1, 2, 3]", wrap=True)
 >>> list(reversed(arr))
 [3, 2, 1]

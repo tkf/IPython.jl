@@ -19,6 +19,14 @@ def py_name(name):
 
 class JuliaAPI(object):
 
+    """
+    Julia-Python interface.
+
+    .. method:: start_repl(*, banner=False, history_file=True, **kwargs)
+
+       Start Julia REPL.
+    """
+
     def __init__(self, eval_str, api):
         self.eval_str = eval_str
         self.api = api
@@ -137,7 +145,7 @@ class JuliaAPI(object):
 
     def getattr(self, obj, name):
         """
-        Get attribute (property) named `name` of Julia object `obj`.
+        Get attribute (property) named `name` of a Julia object `obj`.
         """
         try:
             return self.maybe_wrap(self.getproperty(obj, jl_name(name)))
@@ -154,7 +162,12 @@ class JuliaMain(object):
     def __init__(self, julia):
         self.__julia = julia
 
-    eval = property(lambda self: self.__julia.eval)
+    eval = property(lambda self: self.__julia.eval,
+                    doc=JuliaAPI.eval.__doc__)
+    """
+    An alias to `.JuliaAPI.eval`.
+    """
+    # "doc=..." is for IPython.  The literal docstring is for Python.
 
     def __setattr__(self, name, value):
         if name.startswith('_'):
@@ -187,6 +200,9 @@ class JuliaMain(object):
     # well in Python REPLs like IPython.
 
     def import_(self, module):
+        """
+        Run ``import <module>`` in an anonymous module and return ``<module>``.
+        """
         return self.eval("""eval(Module(), quote
         import {module}
         {module}
