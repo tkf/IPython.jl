@@ -36,7 +36,7 @@ uncompletable_events = [
 
 def check_version(julia):
     if julia.eval('VERSION < v"0.7-"'):
-        return pytest.skip("Completion not supported in Julia 0.6")
+        raise pytest.skip("Completion not supported in Julia 0.6")
 
 
 @pytest.mark.parametrize("event", completable_events)
@@ -46,7 +46,7 @@ def test_completable_events(julia, event):
     assert isinstance(completions, list)
     check_version(julia)
     assert completions
-    assert set(map(type, completions)) == set(string_types)
+    assert set(map(type, completions)) <= set(string_types)
 
 
 @pytest.mark.parametrize("event", uncompletable_events)
