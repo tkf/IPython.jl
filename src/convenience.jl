@@ -145,8 +145,32 @@ function install_dependency(package; force=false, dry_run=false)
 end
 
 
-function test_replhelper()
-    command = `$(PyCall.pyprogramname) -m pytest`
+function test_replhelper(args=``; inprocess=false, kwargs...)
+    if inprocess
+        test_replhelper_inprocess(args; kwargs...)
+    else
+        test_replhelper_cli(args)
+    end
+end
+
+function test_replhelper_inprocess(args; revise=true, check=true)
+    IPython._start_ipython(:ipython_options)  # setup replhelper.core._Main
+    if revise
+        pyimport("replhelper")[:revise]()
+    end
+    cd(@__DIR__) do
+        code = pyimport("pytest")[:main](collect(args))
+        if !check
+            return code
+        end
+        if code != 0
+            error("$(`pytest $args`) failed with code $code")
+        end
+    end
+end
+
+function test_replhelper_cli(args)
+    command = `$(PyCall.pyprogramname) -m pytest $args`
     @info command
     cd(@__DIR__) do
         run(command)

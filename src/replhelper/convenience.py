@@ -1,61 +1,6 @@
-from __future__ import print_function
-
-import warnings
+import functools
 import sys
-
-
-def jl_name(name):
-    if name.endswith('_b'):
-        return name[:-2] + '!'
-    return name
-
-
-def py_name(name):
-    if name.endswith('!'):
-        return name[:-1] + '_b'
-    return name
-
-
-class JuliaAPI(object):
-
-    def __init__(self, eval_str, set_var):
-        self.eval = eval_str
-        self.set_var = set_var
-
-
-class JuliaNameSpace(object):
-
-    def __init__(self, julia):
-        self.__julia = julia
-
-    eval = property(lambda self: self.__julia.eval)
-
-    def __setattr__(self, name, value):
-        if name.startswith('_'):
-            super(JuliaNameSpace, self).__setattr__(name, value)
-        else:
-            self.__julia.set_var(name, value)
-
-    def __getattr__(self, name):
-        if name.startswith('_'):
-            return super(JuliaNameSpace, self).__getattr__(name)
-        else:
-            return self.__julia.eval(jl_name(name))
-
-    @property
-    def __all__(self):
-        names = self.__julia.eval("names(Main)")
-        return list(map(py_name, names))
-
-    def __dir__(self):
-        if sys.version_info.major == 2:
-            names = set()
-        else:
-            names = set(super(JuliaNameSpace, self).__dir__())
-        names.update(self.__all__)
-        return list(names)
-    # Override __dir__ method so that completing member names work
-    # well in Python REPLs like IPython.
+import warnings
 
 
 instruction_template = """
@@ -112,6 +57,7 @@ def package_name(err):
 
 
 def print_instruction_on_import_error(f):
+    @functools.wraps(f)
     def wrapped(*args, **kwargs):
         try:
             return f(*args, **kwargs)
@@ -130,21 +76,6 @@ def print_instruction_on_import_error(f):
                 return
             raise
     return wrapped
-
-
-def ipython_options(**kwargs):
-    from traitlets.config import Config
-
-    Main = JuliaNameSpace(JuliaAPI(**kwargs))
-    user_ns = dict(
-        Main=Main,
-    )
-
-    c = Config()
-    c.TerminalIPythonApp.display_banner = False
-    c.TerminalInteractiveShell.confirm_exit = False
-
-    return dict(user_ns=user_ns, config=c)
 
 
 segfault_warning = """\
@@ -169,12 +100,17 @@ input (yes/no) before really executing it.
 segfault_warned = False
 
 
-@print_instruction_on_import_error
-def customized_ipython(**kwargs):
+def maybe_warn_segfault():
     global segfault_warned
     import IPython
-    print()
     if int(IPython.__version__.split('.', 1)[0]) < 7 and not segfault_warned:
         warnings.warn(segfault_warning.format(**vars()))
         segfault_warned = True
-    IPython.start_ipython(**ipython_options(**kwargs))
+
+
+def with_message(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwds):
+        maybe_warn_segfault()
+        return func(*args, **kwds)
+    return print_instruction_on_import_error(wrapper)

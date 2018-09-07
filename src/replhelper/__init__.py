@@ -1,1 +1,2 @@
-from .core import customized_ipython, ipython_options
+from .entrypoints import customized_ipython, ipython_options
+from .core import revise

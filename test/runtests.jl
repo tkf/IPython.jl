@@ -15,6 +15,10 @@ end
 include("test_julia_repl.jl")
 include("test_convenience.jl")
 
-IPython.test_replhelper()
+if VERSION < v"0.7.0-"
+    IPython.test_replhelper(`--ignore replhelper/core`; inprocess=true)
+else
+    IPython.test_replhelper(inprocess=true)
+end
 
 # end  # module
