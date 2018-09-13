@@ -3,8 +3,9 @@
 
 from __future__ import print_function
 
-import warnings
 import sys
+import types
+import warnings
 
 try:
     from importlib import reload
@@ -147,6 +148,25 @@ def print_instruction_on_import_error(f):
     return wrapped
 
 
+def get_api(main):
+    if main is None:
+        return None
+    return main._JuliaNameSpace__julia
+
+
+def get_main(**kwargs):
+    """
+    Create or get cached `Main`.
+
+    Caching is required to avoid re-writing to `_Main` when re-entering
+    to IPython session (where `user_ns` would be ignored).
+    """
+    global _Main
+    if _Main is None:
+        _Main = JuliaNameSpace(JuliaAPI(**kwargs))
+    return _Main
+
+
 def ipython_options(**kwargs):
     global _Main
     from traitlets.config import Config
@@ -198,12 +218,27 @@ def customized_ipython(**kwargs):
 
 def revise():
     """Ad-hoc hot reload."""
+
+    Main = _Main
+
     import replhelper
     reload(replhelper.core)
 
-    if _Main is not None:
-        _Main.__class__ = replhelper.core.JuliaNameSpace
-        _Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
-        replhelper.core._Main = _Main
+    if Main is not None:
+        Main.__class__ = replhelper.core.JuliaNameSpace
+        Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
+        replhelper.core._Main = Main
+
+    try:
+        replhelper.tests
+    except AttributeError:
+        return
+
+    # *Try* reloading modules `replhelper.tests.*`.  If there are
+    # dependencies between those modules, it's not going to work.
+    for (name, module) in sorted(vars(replhelper.tests).items(),
+                                 key=lambda pair: pair[0]):
+        if isinstance(module, types.ModuleType):
+            reload(module)
 
     reload(replhelper)
