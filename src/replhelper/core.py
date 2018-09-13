@@ -32,15 +32,19 @@ def py_name(name):
 
 class JuliaAPI(object):
 
-    def __init__(self, eval_str, set_var):
+    def __init__(self, eval_str, api):
         self.eval = eval_str
-        self.set_var = set_var
+        self.api = api
+
+    def __getattr__(self, name):
+        return self.eval(name, scope=self.api)
 
 
 class JuliaNameSpace(object):
 
     def __init__(self, julia):
         self.__julia = julia
+        self.__scope = julia.eval("Main")
 
     eval = property(lambda self: self.__julia.eval)
 
@@ -49,7 +53,7 @@ class JuliaNameSpace(object):
             object.__setattr__(self, name, value)
             # super().__setattr__(name, value)
         else:
-            self.__julia.set_var(name, value)
+            self.__julia.setattr(self.__scope, name, value)
 
     def __getattr__(self, name):
         if name.startswith('_'):
