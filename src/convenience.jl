@@ -111,10 +111,12 @@ function conda_installation(package)
 end
 
 function pip_installation(package)
-    if package in (conda_packages..., "ipython-dev", "julia")
+    if package in (conda_packages..., "ipython-dev", "ipython-pre", "julia")
         args = package
         if package == "ipython-dev"
             args = `--upgrade "git+git://github.com/ipython/ipython#egg=ipython"`
+        elseif package == "ipython-pre"
+            args = `--upgrade --pre ipython`
         end
         command = `$(PyCall.pyprogramname) -m pip install $args`
         message = """

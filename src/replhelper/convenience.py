@@ -91,6 +91,7 @@ If you need to install development version of IPython and understand
 what would happen to your Python environment by doing so, executing
 the following command in Julia may help:
 
+    IPython.install_dependency("ipython-pre")  # or
     IPython.install_dependency("ipython-dev")
 
 It prints the installation command to be executed and prompts your
