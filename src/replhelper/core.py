@@ -158,6 +158,10 @@ def get_api(main):
     return main._JuliaNameSpace__julia
 
 
+def get_cached_api():
+    return get_api(_Main)
+
+
 def get_main(**kwargs):
     """
     Create or get cached `Main`.
@@ -183,6 +187,11 @@ def ipython_options(**kwargs):
     c = Config()
     c.TerminalIPythonApp.display_banner = False
     c.TerminalInteractiveShell.confirm_exit = False
+
+    from . import ipyext
+    c.InteractiveShellApp.extensions = [
+        ipyext.__name__,
+    ]
 
     return dict(user_ns=user_ns, config=c)
 
@@ -232,6 +241,13 @@ def revise():
         Main.__class__ = replhelper.core.JuliaNameSpace
         Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
         replhelper.core._Main = Main
+
+    try:
+        replhelper.ipyext
+    except AttributeError:
+        pass
+    else:
+        reload(replhelper.ipyext)
 
     try:
         replhelper.tests

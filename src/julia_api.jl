@@ -30,4 +30,18 @@ function setattr(mod::Module, name, value)
     return nothing
 end
 
+@static if VERSION < v"0.7-"
+    completions(_a...; __k...) = String[]
+else
+    function completions(string, pos, context_module = Main)
+        ret, _, should_complete =
+            REPL.completions(string, pos, context_module)
+        if should_complete
+            return map(REPL.completion_text, ret)
+        else
+            return String[]
+        end
+    end
+end
+
 end  # module
