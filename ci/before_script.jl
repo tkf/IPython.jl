@@ -21,7 +21,7 @@ IPython.install_dependency("pytest"; force=true)
 IPython.install_dependency("ipython"; force=true)
 if get(ENV, "CONDA_JL_VERSION", "") != "2"
     # Use regular IPython when 7.0 is out.
-    IPython.install_dependency("ipython-dev"; force=true)
+    IPython.install_dependency("ipython-pre"; force=true)
 end
 
 @info "show_versions.jl"
