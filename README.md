@@ -33,6 +33,27 @@ First launch of IPython may be slow.
 * IPython (7.0 or above is recommended)
 
 
+## Configuration
+
+### Julia-mode like prompt
+
+If you want IPython prompt to look like a part of Julia prompt, then add
+the following snippet in `~/.ipython/profile_default/ipython_config.py`:
+
+```python
+try:
+    from ipython_jl.tools import JuliaModePrompt
+except ImportError:
+    pass
+else:
+    c.TerminalInteractiveShell.prompts_class = JuliaModePrompt
+```
+
+Then the prompt would then look like `ipy 1>` instead of `In [1]:`.
+It also removes `Out[1]`.  Note that above setting does not change
+your normal IPython prompts.
+
+
 [travis-img]: https://travis-ci.org/tkf/IPython.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/tkf/IPython.jl
 [coveralls-img]: https://coveralls.io/repos/tkf/IPython.jl/badge.svg?branch=master&service=github
