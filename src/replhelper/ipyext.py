@@ -35,9 +35,30 @@ def _julia_completer(self, event):
     return julia_completer(get_cached_api(), self, event)
 
 
+def julia_inputhook(context):
+    """
+    Hook to be run when IPython is idle.
+
+    This is passed to `prompt_toolkit.PromptSession` as `inputhook` argument
+    via `IPython`.
+
+    Parameters
+    ----------
+    context : InputHookContext
+        See: https://github.com/jonathanslenders/python-prompt-toolkit/blob/master/prompt_toolkit/eventloop/inputhook.py
+    """
+    julia = get_cached_api()
+    jl_sleep = julia.sleep
+    while not context.input_is_ready():
+        jl_sleep(0.05)
+
+
 def load_ipython_extension(ip):
     global _unregister_key_bindings
     _unregister_key_bindings = register_key_bindings(ip)
+
+    from IPython.terminal.pt_inputhooks import register
+    register("julia", julia_inputhook)
 
     ip.set_hook("complete_command", _julia_completer,
                 re_key=r""".*\bMain\.eval\(["']""")

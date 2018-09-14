@@ -17,6 +17,7 @@ def post_startup_configuration(ip):
     from . import ipyext
     ip.run_cell(dedent("""
     %load_ext {ipyext}
+    %gui julia
     """.format(ipyext=ipyext.__name__)))
 
 
