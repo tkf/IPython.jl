@@ -10,11 +10,11 @@ Examples:
     cd HERE
     ./pytest.jl
     ./pytest.jl -x --pdb
-    ./pytest.jl replhelper/tests/test_ipyext.py
+    ./pytest.jl ipython_jl/tests/test_ipyext.py
 =#
 
 using IPython
-code = IPython.test_replhelper(
+code = IPython.test_ipython_jl(
     `$ARGS`;
     inprocess = true,
     revise = false,

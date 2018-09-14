@@ -6,7 +6,7 @@ julia_exepath() =
              Base.julia_exename())
 
 function _start_ipython(name; kwargs...)
-    pyimport("replhelper")[name](;
+    pyimport("ipython_jl")[name](;
         eval_str = JuliaAPI.eval_str,
         api = JuliaAPI,
         kwargs...)

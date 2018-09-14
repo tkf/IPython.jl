@@ -147,18 +147,18 @@ function install_dependency(package; force=false, dry_run=false)
 end
 
 
-function test_replhelper(args=``; inprocess=false, kwargs...)
+function test_ipython_jl(args=``; inprocess=false, kwargs...)
     if inprocess
-        test_replhelper_inprocess(args; kwargs...)
+        test_ipython_jl_inprocess(args; kwargs...)
     else
-        test_replhelper_cli(args)
+        test_ipython_jl_cli(args)
     end
 end
 
-function test_replhelper_inprocess(args; revise=true, check=true)
-    IPython._start_ipython(:ipython_options)  # setup replhelper.core._Main
+function test_ipython_jl_inprocess(args; revise=true, check=true)
+    IPython._start_ipython(:ipython_options)  # setup ipython_jl.core._Main
     if revise
-        pyimport("replhelper")[:revise]()
+        pyimport("ipython_jl")[:revise]()
     end
     cd(@__DIR__) do
         code = pyimport("pytest")[:main](collect(args))
@@ -171,7 +171,7 @@ function test_replhelper_inprocess(args; revise=true, check=true)
     end
 end
 
-function test_replhelper_cli(args)
+function test_ipython_jl_cli(args)
     command = `$(PyCall.pyprogramname) -m pytest $args`
     @info command
     cd(@__DIR__) do

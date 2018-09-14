@@ -105,31 +105,31 @@ def revise():
 
     Main = _Main
 
-    import replhelper
-    reload(replhelper.core)
+    import ipython_jl
+    reload(ipython_jl.core)
 
     if Main is not None:
-        Main.__class__ = replhelper.core.JuliaNameSpace
-        Main._JuliaNameSpace__julia.__class__ = replhelper.core.JuliaAPI
-        replhelper.core._Main = Main
+        Main.__class__ = ipython_jl.core.JuliaNameSpace
+        Main._JuliaNameSpace__julia.__class__ = ipython_jl.core.JuliaAPI
+        ipython_jl.core._Main = Main
 
     try:
-        replhelper.ipyext
+        ipython_jl.ipyext
     except AttributeError:
         pass
     else:
-        reload(replhelper.ipyext)
+        reload(ipython_jl.ipyext)
 
     try:
-        replhelper.tests
+        ipython_jl.tests
     except AttributeError:
         return
 
-    # *Try* reloading modules `replhelper.tests.*`.  If there are
+    # *Try* reloading modules `ipython_jl.tests.*`.  If there are
     # dependencies between those modules, it's not going to work.
-    for (name, module) in sorted(vars(replhelper.tests).items(),
+    for (name, module) in sorted(vars(ipython_jl.tests).items(),
                                  key=lambda pair: pair[0]):
         if isinstance(module, types.ModuleType):
             reload(module)
 
-    reload(replhelper)
+    reload(ipython_jl)
