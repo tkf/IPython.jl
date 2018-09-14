@@ -59,6 +59,8 @@ def load_ipython_extension(ip):
 
     from IPython.terminal.pt_inputhooks import register
     register("julia", julia_inputhook)
+    if not ip.active_eventloop:
+        ip.enable_gui("julia")
 
     ip.set_hook("complete_command", _julia_completer,
                 re_key=r""".*\bMain\.eval\(["']""")
