@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from textwrap import dedent
 
 from .convenience import with_message

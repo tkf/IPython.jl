@@ -23,6 +23,10 @@ if get(ENV, "CONDA_JL_VERSION", "") != "2"
     # Use regular IPython when 7.0 is out.
     IPython.install_dependency("ipython-dev"; force=true)
 end
+if get(ENV, "CONDA_JL_VERSION", "") == "2"
+    # For IPython.testing.globalipapp
+    IPython.install_dependency("mock"; force=true)
+end
 
 @info "show_versions.jl"
 include("show_versions.jl")
