@@ -56,3 +56,7 @@ def test_uncompletable_events(julia, event):
     assert isinstance(completions, list)
     check_version(julia)
     assert not completions
+
+
+def test_inputhook_registration(ipy_with_magic):
+    assert ipy_with_magic.active_eventloop == "julia"
