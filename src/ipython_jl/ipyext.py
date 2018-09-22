@@ -1,3 +1,10 @@
+from __future__ import print_function
+
+from contextlib import contextmanager
+import os
+import sys
+import traceback
+
 from .core import get_cached_api
 
 try:
@@ -53,6 +60,43 @@ def julia_inputhook(context):
         jl_sleep(0.05)
 
 
+@contextmanager
+def init_julia_message_on_failure():
+    try:
+        yield
+    except Exception:
+        traceback.print_exc()
+        print(file=sys.stderr)
+        print("Executing `julia.Julia(init_julia=False)` failed.",
+              "It is safe to ignore this exception unless you are",
+              "going to use PyJulia.",
+              file=sys.stderr)
+        print("To suppress automatic PyJulia initialization,",
+              "set environment variable `IPYTHON_JL_SETUP_PYJULIA`",
+              'to "no".',
+              file=sys.stderr)
+
+
+def maybe_load_pyjulia():
+    """
+    Execute ``julia.Julia(init_julia=False)`` if appropriate.
+
+    It is useful since it skips initialization when creating the
+    global "cached" API.  This makes PyJuli initialization slightly
+    faster and also makes sure to not load incompatible `libjulia`
+    when the name of the julia command of this process is not `julia`.
+    """
+    if (os.environ.get("IPYTHON_JL_SETUP_PYJULIA", "yes").lower()
+            in ("yes", "t", "true")):
+        try:
+            from julia import Julia
+        except ImportError:
+            pass
+        else:
+            with init_julia_message_on_failure():
+                Julia(init_julia=False)
+
+
 def load_ipython_extension(ip):
     global _unregister_key_bindings
     _unregister_key_bindings = register_key_bindings(ip)
@@ -61,6 +105,8 @@ def load_ipython_extension(ip):
     register("julia", julia_inputhook)
     if not ip.active_eventloop:
         ip.enable_gui("julia")
+
+    maybe_load_pyjulia()
 
     ip.set_hook("complete_command", _julia_completer,
                 re_key=r""".*\bMain\.eval\(["']""")

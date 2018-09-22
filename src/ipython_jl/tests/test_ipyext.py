@@ -1,6 +1,6 @@
 import pytest
 
-from ..ipyext import julia_completer
+from ..ipyext import julia_completer, init_julia_message_on_failure
 
 try:
     from types import SimpleNamespace
@@ -60,3 +60,18 @@ def test_uncompletable_events(julia, event):
 
 def test_inputhook_registration(ipy_with_magic):
     assert ipy_with_magic.active_eventloop == "julia"
+
+
+def test_init_julia_message_on_failure__with_exception(capsys):
+    msg = "exception must be captured"
+    with init_julia_message_on_failure():
+        raise Exception(msg)
+    captured = capsys.readouterr()
+    assert not captured.out
+    assert msg in captured.err
+    assert "It is safe to ignore this exception" in captured.err
+
+
+def test_init_julia_message_on_failure__no_exception():
+    with init_julia_message_on_failure():
+        pass
