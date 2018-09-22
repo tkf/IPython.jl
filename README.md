@@ -33,6 +33,29 @@ First launch of IPython may be slow.
 * IPython (7.0 or above is recommended)
 
 
+## Accessing Julia from Python
+
+If simple `Main.eval("...")` and `Main.<name>` accessor is not enough,
+[PyJulia] is a nice way to access Julia objects from Python.  For
+example, you can import any Julia package from Python:
+
+[PyJulia]: https://github.com/JuliaPy/pyjulia
+
+```pycon
+>>> from julia import Base
+>>> Base.banner()
+```
+
+**Note:** Until PyJulia 0.2 is released, I recommend using the master
+branch of PyJulia.
+See: https://github.com/JuliaPy/pyjulia/issues/198
+
+For more advanced/experimental Julia-(I)Python integration, see
+[`ipyjulia_hacks`].
+
+[`ipyjulia_hacks`]: http://ipyjulia-hacks.readthedocs.io/en/latest
+
+
 ## Configuration
 
 ### Julia-mode like prompt
