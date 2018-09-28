@@ -83,14 +83,13 @@ Segmentation fault warning.
 
 You are using IPython version {IPython.__version__} which is known to
 cause segmentation fault with tab completion.  For segfault-free
-IPython, upgrade to version 7 or above (which may still be in
-development stage depending on the time you read this message).
+IPython, upgrade to version 7 or above.
 Note also that IPython releases after 5.x do not support Python 2.
 
-If you need to install development version of IPython and understand
-what would happen to your Python environment by doing so, executing
-the following command in Julia may help:
+If you want to upgrade IPython, executing the following command in
+Julia may help:
 
+    IPython.install_dependency("ipython")      # or
     IPython.install_dependency("ipython-pre")  # or
     IPython.install_dependency("ipython-dev")
 

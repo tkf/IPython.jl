@@ -83,12 +83,15 @@ NOT_INSTALLABLE = (false, "", Nothing)
 
 function condajl_installation(package)
     if PyCall.conda && package in conda_packages
+        args = `install -y -c conda-forge $package`
         message = """
         Installing $package via Conda.jl
         Execute?:
-            Conda.add($package)
+            Conda.runconda($args)
         """
-        install = () -> Conda.add(package)
+        install = () -> Conda.runconda(args)
+        # `Conda.add_channel` overwrites user's ~/.condarc so let's
+        # not use it.
         return (true, message, install)
     end
     return NOT_INSTALLABLE
@@ -98,7 +101,7 @@ function conda_installation(package)
     conda = joinpath(dirname(PyCall.pyprogramname), "conda")
     if isfile(conda) && package in conda_packages
         prefix = dirname(dirname(PyCall.pyprogramname))
-        command = `$conda install --prefix $prefix $package`
+        command = `$conda install --prefix $prefix -c conda-forge $package`
         message = """
         Installing $package with $conda
         Execute?:
@@ -115,11 +118,11 @@ function pip_installation(package)
                    "mock", "ipython-dev", "ipython-pre", "julia")
         args = package
         if package == "ipython-dev"
-            args = `--upgrade "git+git://github.com/ipython/ipython#egg=ipython"`
+            args = `"git+git://github.com/ipython/ipython#egg=ipython"`
         elseif package == "ipython-pre"
-            args = `--upgrade --pre ipython`
+            args = `--pre ipython`
         end
-        command = `$(PyCall.pyprogramname) -m pip install $args`
+        command = `$(PyCall.pyprogramname) -m pip install --upgrade $args`
         message = """
         Installing $package for $(PyCall.pyprogramname)
         Execute?:
