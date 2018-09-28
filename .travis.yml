@@ -42,6 +42,14 @@ script:
       IPython.install_dependency("ipython-pre"; force=true)';
     fi
 
+  # Test that IPython.install_dependency("ipython-dev") works:
+  - if [ "$CONDA_JL_VERSION" = 3 ]; then
+    julia --color=yes -e '
+      using IPython;
+      IPython.install_dependency("ipython-dev"; force=true)';
+    julia --color=yes -e 'VERSION >= v"0.7-" && using Pkg; Pkg.test("IPython")';
+    fi
+
 after_success:
   # push coverage results to Coveralls
   - julia --color=yes -e 'cd(Pkg.dir("IPython")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
