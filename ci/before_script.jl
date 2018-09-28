@@ -38,3 +38,13 @@ end
 
 @info "show_versions.jl"
 include("show_versions.jl")
+
+@info "Pkg.build(IPython) since conda might have re-installed different Python"
+Pkg.build("IPython")
+
+if VERSION >= v"0.7.0-"
+    @info "PyCall/deps/build.log:"
+    print(read(
+        joinpath(dirname(dirname(pathof(IPython.PyCall))), "deps", "build.log"),
+        String))
+end
