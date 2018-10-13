@@ -1,5 +1,9 @@
 # module TestIPython
 
+if lowercase(get(ENV, "CI", "false")) == "true"
+    include("install_dependencies.jl")
+end
+
 include("preamble.jl")
 
 IPython.envinfo()
