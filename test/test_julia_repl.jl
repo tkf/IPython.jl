@@ -1,7 +1,7 @@
 module TestJuliaREPL
 
 include("preamble.jl")
-using IPython: init_repl, init_repl_if_not, REPL
+using IPython: init_repl, afterreplinit, REPL
 
 @static if VERSION >= v"0.7.0-"
     using REPL: TextTerminal
@@ -10,8 +10,8 @@ else
 end
 
 
-@testset "init_repl_if_not" begin
-    repl = init_repl_if_not(; _init_repl=identity)
+@testset "afterreplinit" begin
+    repl = afterreplinit(identity)
     if isinteractive()
         @test repl === Base.active_repl
     else

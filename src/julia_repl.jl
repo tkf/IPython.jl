@@ -5,21 +5,43 @@ else
     using Base: REPL, LineEdit
 end
 
-# Register keybind '.' in Julia REPL:
+"""
+    afterreplinit(f)
 
-function init_repl_if_not(; _init_repl=init_repl)
-    active_repl = try
-        Base.active_repl
-    catch err
-        err isa UndefVarError || rethrow()
-        return
+Like `atreplinit` but triggers `f` even after REPL is initialized when
+it is called.
+"""
+function afterreplinit(f)
+    # See: https://github.com/JuliaLang/Pkg.jl/blob/v1.0.2/src/Pkg.jl#L338
+    function wrapper(repl)
+        if isinteractive() && repl isa REPL.LineEditREPL
+            f(repl)
+        end
     end
-
-    if isinteractive() && typeof(active_repl) != REPL.BasicREPL
-        _init_repl(active_repl)
+    if isdefined(Base, :active_repl)
+        wrapper(Base.active_repl)
+    else
+        atreplinit() do repl
+            @async begin
+                wait_repl_interface(repl)
+                wrapper(repl)
+            end
+        end
     end
 end
-# See: https://github.com/JuliaInterop/RCall.jl/blob/master/src/setup.jl
+
+function wait_repl_interface(repl)
+    for _ in 1:20
+        try
+            repl.interface.modes[1].keymap_dict
+            return
+        catch
+        end
+        sleep(0.05)
+    end
+end
+
+# Register keybind '.' in Julia REPL:
 
 function init_repl(repl)
     start = function(s, _...)

@@ -18,5 +18,5 @@ end
 
 function __init__()
     pushfirst!(PyVector(pyimport("sys")["path"]), @__DIR__)
-    init_repl_if_not()
+    afterreplinit(init_repl)
 end
