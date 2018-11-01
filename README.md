@@ -16,7 +16,8 @@ can switch back to Julia REPl by `backspace` or `ctrl-h` key (like
 other REPL modes).  For older versions of IPython, exiting IPython as
 usual (e.g., `ctrl-d`) brings you back to the Julia REPL.  Re-entering
 IPython keeps the previous state.  Use pre-defined `Main` object to
-access Julia namespace from IPython.
+access Julia namespace from IPython.  Use `py"..."` string macro to
+access Python namespace from Julia.
 
 **Note:**
 First launch of IPython may be slow.

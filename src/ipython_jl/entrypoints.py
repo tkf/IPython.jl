@@ -24,8 +24,12 @@ def post_startup_configuration(ip):
 
 def ipython_options(**kwargs):
     from traitlets.config import Config
+    import __main__
 
-    user_ns = dict(
+    # Use `__main__.__dict__` so that IPython namespace can be
+    # retrieved from PyCall using `py"object"`.
+    user_ns = __main__.__dict__
+    user_ns.update(
         Main=get_main(**kwargs),
     )
 
