@@ -5,6 +5,7 @@ include("preamble.jl")
 @testset "Convenience" begin
     @test_nothrow IPython.envinfo(devnull)
     @test IPython.pyversion("IPython") isa String
+    @test IPython._pyversion("IPython") isa String
     if occursin(".dev", IPython._pyversion("IPython"))
         @test startswith(IPython.pyversion("IPython"),
                          IPython._pyversion("IPython"))

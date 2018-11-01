@@ -36,9 +36,11 @@ function pkg_resources_version(name)
 end
 
 function _pyversion(name)
+    @info "in pyimport($name)"
     package = try
         pyimport(name)
     catch err
+        @info "pyimport($name) failed" exception=(err, catch_backtrace())
         if ! (err isa PyCall.PyError)
             rethrow()
         end
@@ -47,6 +49,7 @@ function _pyversion(name)
     try
         return package[:__version__]
     catch err
+        @info "package[:__version__] failed" exception=(err, catch_backtrace())
         if ! (err isa KeyError)
             rethrow()
         end
