@@ -47,10 +47,6 @@ example, you can import any Julia package from Python:
 >>> Base.banner()
 ```
 
-**Note:** Until PyJulia 0.2 is released, I recommend using the master
-branch of PyJulia.
-See: https://github.com/JuliaPy/pyjulia/issues/198
-
 For more advanced/experimental Julia-(I)Python integration, see
 [`ipyjulia_hacks`].
 
