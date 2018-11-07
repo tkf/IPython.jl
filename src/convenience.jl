@@ -83,15 +83,12 @@ NOT_INSTALLABLE = (false, "", Nothing)
 
 function condajl_installation(package)
     if PyCall.conda && package in conda_packages
-        args = `install -y -c conda-forge $package`
         message = """
         Installing $package via Conda.jl
         Execute?:
-            Conda.runconda($args)
+            Conda.add($package)
         """
-        install = () -> Conda.runconda(args)
-        # `Conda.add_channel` overwrites user's ~/.condarc so let's
-        # not use it.
+        install = () -> Conda.add(package)
         return (true, message, install)
     end
     return NOT_INSTALLABLE
