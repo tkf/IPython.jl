@@ -1,3 +1,9 @@
+if VERSION >= v"0.7.0-"
+    # Adding Pkg in test/REQUIRE would be an error in 0.6.  Using
+    # Project.toml still has some gotchas.  So:
+    Pkg = Base.require(Base.PkgId(Base.UUID(0x44cfe95a1eb252eab672e2afdf69b78f), "Pkg"))
+end
+
 in_CI = lowercase(get(ENV, "CI", "false")) == "true"
 
 if in_CI
