@@ -15,6 +15,11 @@ end
 
 using PyCall
 
+if get(ENV, "CONDA_JL_VERSION", "") == "3"
+    PyCall.conda_add(["python=3.6"])
+    PyCall.conda_add(["python=3.7"])
+end
+
 packages = ["ipython"]
 if in_CI
     push!(packages, "pytest")
