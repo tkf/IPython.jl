@@ -29,6 +29,7 @@ git:
 
 before_script:
   - julia --color=yes -e "using Pkg; Pkg.build()"
+  - cat deps/build.log
 #  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
 
 script:
