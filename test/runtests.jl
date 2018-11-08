@@ -1,24 +1,5 @@
 # module TestIPython
 
-if lowercase(get(ENV, "CI", "false")) == "true"
-    let
-        if VERSION < v"0.7.0-"
-            setup_code = ""
-        else
-            setup_code = Base.load_path_setup_code()
-        end
-        path = joinpath(@__DIR__, "install_dependencies.jl")
-        code = """
-        $setup_code
-        include("$(escape_string(path))")
-        """
-        run(`$(Base.julia_cmd()) -e $code`)
-        # Run install_dependencies.jl in a separate process since it
-        # may re-build PyCall.  In that case, we need to load
-        # re-precompiled PyCall and IPython.
-    end
-end
-
 include("preamble.jl")
 
 IPython.envinfo()
