@@ -28,6 +28,6 @@ PyCall.conda_add(packages)
 if VERSION >= v"0.7.0-"
     @info "PyCall/deps/build.log:"
     print(read(
-        joinpath(dirname(dirname(pathof(IPython.PyCall))), "deps", "build.log"),
+        joinpath(dirname(dirname(pathof(PyCall))), "deps", "build.log"),
         String))
 end
