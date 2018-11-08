@@ -28,7 +28,7 @@ git:
 #    - gfortran
 
 before_script:
-  - julia --color=yes ci/before_script.jl
+  - julia --color=yes -e "using Pkg; Pkg.build()"
 #  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
 
 script:
