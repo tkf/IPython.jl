@@ -12,7 +12,7 @@
 
 Run `using IPython` and then type `.` in empty `julia>` prompt or run
 `IPython.start_ipython()`.  If you are using IPython 7.0 or above, you
-can switch back to Julia REPl by `backspace` or `ctrl-h` key (like
+can switch back to Julia REPL by `backspace` or `ctrl-h` key (like
 other REPL modes).  For older versions of IPython, exiting IPython as
 usual (e.g., `ctrl-d`) brings you back to the Julia REPL.  Re-entering
 IPython keeps the previous state.  Use pre-defined `Main` object to
