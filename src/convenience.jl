@@ -26,7 +26,7 @@ end
 
 function pkg_resources_version(name)
     try
-        return pyimport("pkg_resources")[:get_distribution](name)[:version]
+        return @compatattr pyimport("pkg_resources").get_distribution(name).version
     catch err
         if err isa PyCall.PyError || err isa KeyError
             return
@@ -45,7 +45,7 @@ function _pyversion(name)
         return
     end
     try
-        return package[:__version__]
+        return @compatattr package.__version__
     catch err
         if ! (err isa KeyError)
             rethrow()
@@ -159,10 +159,10 @@ end
 function test_ipython_jl_inprocess(args; revise=true, check=true)
     IPython._start_ipython(:ipython_options)  # setup ipython_jl.core._Main
     if revise
-        pyimport("ipython_jl")[:revise]()
+        @compatattr pyimport("ipython_jl").revise()
     end
     cd(@__DIR__) do
-        code = pyimport("pytest")[:main](collect(args))
+        code = @compatattr pyimport("pytest").main(collect(args))
         if !check
             return code
         end

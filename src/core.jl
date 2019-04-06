@@ -1,3 +1,4 @@
+using Base.Meta: isexpr
 using PyCall
 import Conda
 
@@ -6,6 +7,23 @@ const _getproperty = try
     getproperty
 catch
     getindex
+end
+if _getproperty === getindex
+    _setproperty!(value, name, x) = setindex!(value, x, name)
+else
+    const _setproperty! = setproperty!
+end
+
+compatattr_imp(x) = x
+compatattr_imp(ex::Expr) =
+    if ex.head == :. && length(ex.args) == 2 && !isexpr(ex.args[2], :tuple)
+        :($_getproperty($(compatattr_imp.(ex.args)...)))
+    else
+        Expr(ex.head, compatattr_imp.(ex.args)...)
+    end
+
+macro compatattr(ex)
+    esc(compatattr_imp(ex))
 end
 
 julia_exepath() =
@@ -24,6 +42,6 @@ function start_ipython(; kwargs...)
 end
 
 function __init__()
-    pushfirst!(PyVector(_getproperty(pyimport("sys"), "path")), @__DIR__)
+    pushfirst!(PyVector(@compatattr pyimport("sys")."path"), @__DIR__)
     afterreplinit(init_repl)
 end

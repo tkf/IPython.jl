@@ -14,4 +14,5 @@ macro test_nothrow(ex)
 end
 
 using IPython
+using IPython: @compatattr, _setproperty!
 using Compat

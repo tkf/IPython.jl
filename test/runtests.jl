@@ -27,7 +27,7 @@ ipy_opts = @time IPython._start_ipython(:ipython_options)
 ipy_main = ipy_opts["user_ns"]["Main"]
 
 @testset "Main" begin
-    ipy_main[:x] = 17061
+    _setproperty!(ipy_main, :x, 17061)
     @test x == 17061
 end
 
