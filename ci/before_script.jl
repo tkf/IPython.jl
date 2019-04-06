@@ -6,11 +6,17 @@ else
     end
 end
 
-@info "Pkg.clone(pwd())"
-Pkg.clone(pwd())
+if VERSION < v"0.7.0-"
+    @info "Pkg.clone(pwd())"
+    Pkg.clone(pwd())
+end
 
 @info "Pkg.build(IPython)"
-Pkg.build("IPython")
+if VERSION >= v"1.1.0-rc1"
+    Pkg.build("IPython", verbose=true)
+else
+    Pkg.build("IPython")
+end
 
 using IPython
 
