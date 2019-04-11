@@ -43,18 +43,23 @@ end
 
 # Register keybind '.' in Julia REPL:
 
-function init_repl(repl)
-    start = function(s, _...)
-        if isempty(s) || position(LineEdit.buffer(s)) == 0
+function on_dot_press(s, _...)
+    if isempty(s) || position(LineEdit.buffer(s)) == 0
+        @static if VERSION >= v"0.7.0-"
+            start_ipython()
+        else
             # Force current_module() inside IPython to be Main:
             Base.eval(Main, :($start_ipython()))
-            println()
-            LineEdit.refresh_line(s)
-        else
-            LineEdit.edit_insert(s, '.')
         end
+        println()
+        LineEdit.refresh_line(s)
+    else
+        LineEdit.edit_insert(s, '.')
     end
-    ipy_prompt_keymap = Dict{Any,Any}('.' => start)
+end
+
+function init_repl(repl)
+    ipy_prompt_keymap = Dict{Any,Any}('.' => on_dot_press)
 
     main_mode = repl.interface.modes[1]
     main_mode.keymap_dict = LineEdit.keymap_merge(main_mode.keymap_dict,
