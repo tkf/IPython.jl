@@ -30,18 +30,24 @@ julia_exepath() =
     joinpath(VERSION < v"0.7.0-DEV.3073" ? JULIA_HOME : Base.Sys.BINDIR,
              Base.julia_exename())
 
-function _start_ipython(name; kwargs...)
-    _getproperty(pyimport("ipython_jl"), name)(;
-        eval_str = JuliaAPI.eval_str,
-        api = JuliaAPI,
-        kwargs...)
-end
+_start_ipython(name::Symbol) = _start_ipython(getipythonjl(name))
+# helper function that is used only in tests
 
-function start_ipython(; kwargs...)
-    _start_ipython(:customized_ipython; kwargs...)
-end
+_start_ipython(f::PyObject) =
+    pycall(
+        f, Nothing,
+        JuliaAPI.eval_str,
+        JuliaAPI,
+    )
+
+start_ipython() = _start_ipython(_customized_ipython)
+
+getipythonjl(name) = _getproperty(pyimport("ipython_jl"), name)
+
+const _customized_ipython = PyNULL()
 
 function __init__()
     pushfirst!(PyVector(@compatattr pyimport("sys")."path"), @__DIR__)
+    copy!(_customized_ipython, getipythonjl(:customized_ipython))
     afterreplinit(init_repl)
 end

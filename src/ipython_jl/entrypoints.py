@@ -22,7 +22,7 @@ def post_startup_configuration(ip):
     """.format(ipyext=ipyext.__name__)))
 
 
-def ipython_options(**kwargs):
+def ipython_options(eval_str, api):
     from traitlets.config import Config
     import __main__
 
@@ -30,7 +30,7 @@ def ipython_options(**kwargs):
     # retrieved from PyCall using `py"object"`.
     user_ns = __main__.__dict__
     user_ns.update(
-        Main=get_main(**kwargs),
+        Main=get_main(eval_str=eval_str, api=api),
     )
 
     c = Config()
@@ -56,7 +56,7 @@ def ipython_options(**kwargs):
 
 
 @with_message
-def customized_ipython(**kwargs):
+def customized_ipython(eval_str, api):
     import IPython
     print()
-    IPython.start_ipython(**ipython_options(**kwargs))
+    IPython.start_ipython(**ipython_options(eval_str=eval_str, api=api))
