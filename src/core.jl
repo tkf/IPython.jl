@@ -1,5 +1,6 @@
 using Base.Meta: isexpr
 using PyCall
+using PyCall: pyjlwrap_new
 import Conda
 
 const _getproperty = try
@@ -30,15 +31,17 @@ julia_exepath() =
     joinpath(VERSION < v"0.7.0-DEV.3073" ? JULIA_HOME : Base.Sys.BINDIR,
              Base.julia_exename())
 
-_start_ipython(name::Symbol) = _start_ipython(getipythonjl(name))
+_start_ipython(name::Symbol) = _start_ipython(getipythonjl(name), PyAny)
 # helper function that is used only in tests
 
-_start_ipython(f::PyObject) =
-    pycall(
-        f, Nothing,
-        JuliaAPI.eval_str,
-        JuliaAPI,
+function _start_ipython(f::PyObject,
+                        returntype = Nothing)
+    return pycall(
+        f, returntype,
+        pyfunctionret(JuliaAPI.eval_str, PyObject, String),
+        pyjlwrap_new(JuliaAPI),
     )
+end
 
 start_ipython() = _start_ipython(_customized_ipython)
 
