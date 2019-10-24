@@ -28,7 +28,7 @@ macro compatattr(ex)
 end
 
 julia_exepath() =
-    joinpath(VERSION < v"0.7.0-DEV.3073" ? JULIA_HOME : Base.Sys.BINDIR,
+    joinpath(Base.Sys.BINDIR,
              Base.julia_exename())
 
 _start_ipython(name::Symbol) = _start_ipython(getipythonjl(name), PyAny)

@@ -3,11 +3,7 @@ module TestJuliaREPL
 include("preamble.jl")
 using IPython: init_repl, afterreplinit, REPL
 
-@static if VERSION >= v"0.7.0-"
-    using REPL: TextTerminal
-else
-    using Base.Terminals: TextTerminal
-end
+using REPL: TextTerminal
 
 
 @testset "afterreplinit" begin
@@ -24,12 +20,8 @@ struct DummyTerminal <: TextTerminal
 end
 
 function dummy_repl()
-    if VERSION >= v"0.7.0-"
-        hascolor = false
-        repl = REPL.LineEditREPL(DummyTerminal(), hascolor)
-    else
-        repl = REPL.LineEditREPL(DummyTerminal())
-    end
+    hascolor = false
+    repl = REPL.LineEditREPL(DummyTerminal(), hascolor)
     repl.interface = REPL.setup_interface(repl)
     return repl
 end
