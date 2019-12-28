@@ -11,7 +11,9 @@ PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [compat]
-PyCall = "≥ 1.16"
+Compat = "2.0, 3.0"
+Conda = "1.0"
+PyCall = "1.16"
 julia = "0.7, 1.0"
 
 [extras]
