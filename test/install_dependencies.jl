@@ -13,7 +13,7 @@ using Compat: @info
 using IPython
 
 IPython.install_dependency("pytest"; force=true)
-IPython.install_dependency("ipython"; force=true)
+IPython.install_dependency(get(ENV, "IPYTHON_JL_IPYTHON_DEP_NAME", "ipython"); force=true)
 if get(ENV, "CONDA_JL_VERSION", "") == "2"
     # For IPython.testing.globalipapp
     IPython.install_dependency("mock"; force=true)
