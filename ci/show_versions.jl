@@ -1,7 +1,6 @@
 if VERSION >= v"0.7.0-"
     using Pkg
-    show(stdout, "text/plain", Pkg.installed())
-    println()
+    Pkg.status()
 else
     for line in split(strip(readstring("REQUIRE")), '\n')[2:end]
         name = split(line)[1]
