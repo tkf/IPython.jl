@@ -20,3 +20,6 @@ notifications:
 matrix:
   allow_failures:
     - julia: nightly
+
+coveralls: true
+codecov: true
