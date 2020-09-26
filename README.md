@@ -1,7 +1,6 @@
 # Launch IPython in Julia
 
 [![Build Status][ci-img]][ci-url]
-[![Coverage Status][coveralls-img]][coveralls-url]
 [![codecov.io][codecov-img]][codecov-url]
 
 
@@ -75,7 +74,5 @@ your normal IPython prompts.
 
 [ci-img]: https://github.com/tkf/IPython.jl/workflows/Run%20tests/badge.svg
 [ci-url]: https://github.com/tkf/IPython.jl/actions?query=workflow%3ARun+tests
-[coveralls-img]: https://coveralls.io/repos/tkf/IPython.jl/badge.svg?branch=master&service=github
-[coveralls-url]: https://coveralls.io/github/tkf/IPython.jl?branch=master
 [codecov-img]: http://codecov.io/github/tkf/IPython.jl/coverage.svg?branch=master
 [codecov-url]: http://codecov.io/github/tkf/IPython.jl?branch=master
