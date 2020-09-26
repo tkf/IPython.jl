@@ -6,14 +6,17 @@ os:
 julia:
   - 1.0
   - 1.3
-  - nightly
 env:
-  - CONDA_JL_VERSION="2"
   - CONDA_JL_VERSION="3"
   - CONDA_JL_VERSION="3" IPYTHON_JL_IPYTHON_DEP_NAME="ipython-pre"
   - CONDA_JL_VERSION="3" IPYTHON_JL_IPYTHON_DEP_NAME="ipython-dev"
 notifications:
   email: false
+
+# Only build branches via PR to avoid running CI twice.
+# https://docs.travis-ci.com/user/conditional-builds-stages-jobs
+# https://docs.travis-ci.com/user/conditions-v1
+if: branch = master OR tag IS present OR type != push
 
 ## uncomment the following lines to allow failures on nightly julia
 ## (tests will run but not make your overall status red)
