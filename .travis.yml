@@ -23,6 +23,3 @@ if: branch = master OR tag IS present OR type != push
 matrix:
   allow_failures:
     - julia: nightly
-
-coveralls: true
-codecov: true
