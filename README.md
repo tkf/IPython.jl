@@ -1,6 +1,6 @@
 # Launch IPython in Julia
 
-[![Build Status][travis-img]][travis-url]
+[![Build Status][ci-img]][ci-url]
 [![Coverage Status][coveralls-img]][coveralls-url]
 [![codecov.io][codecov-img]][codecov-url]
 
@@ -73,8 +73,8 @@ It also removes `Out[1]`.  Note that above setting does not change
 your normal IPython prompts.
 
 
-[travis-img]: https://travis-ci.org/tkf/IPython.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/tkf/IPython.jl
+[ci-img]: https://github.com/tkf/IPython.jl/workflows/Run%20tests/badge.svg
+[ci-url]: https://github.com/tkf/IPython.jl/actions?query=workflow%3ARun+tests
 [coveralls-img]: https://coveralls.io/repos/tkf/IPython.jl/badge.svg?branch=master&service=github
 [coveralls-url]: https://coveralls.io/github/tkf/IPython.jl?branch=master
 [codecov-img]: http://codecov.io/github/tkf/IPython.jl/coverage.svg?branch=master
