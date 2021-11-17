@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        julia-version: ['1.5', '1.0']
+        julia-version: ['1.6', '1.0']
         python-version: ['3.7', '3.8']
         ipython-dep-name: ['ipython']
         include:
           - python-version: '3.8'
-            julia-version: '1.5'
+            julia-version: '1.6'
             ipython-dep-name: 'ipython-pre'
           - python-version: '3.8'
-            julia-version: '1.5'
+            julia-version: '1.6'
             ipython-dep-name: 'ipython-dev'
       fail-fast: false
     name: Test
