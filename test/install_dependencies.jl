@@ -21,11 +21,8 @@ end
 
 # Build PyCall again, since above installation could have changed
 # Python versions.
-Pkg.build("PyCall")
-
-if VERSION >= v"0.7.0-"
-    @info "PyCall/deps/build.log:"
-    print(read(
-        joinpath(dirname(dirname(pathof(IPython.PyCall))), "deps", "build.log"),
-        String))
+if VERSION < v"1.1"
+    Pkg.build("PyCall")
+else
+    Pkg.build("PyCall"; verbose = true)
 end
