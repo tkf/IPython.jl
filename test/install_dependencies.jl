@@ -13,7 +13,7 @@ using Compat: @info
 using IPython
 
 IPython.install_dependency("pytest"; force=true)
-IPython.install_dependency("ipython"; force=true)
+IPython.install_dependency(get(ENV, "IPYTHON_JL_IPYTHON_DEP_NAME", "ipython"); force=true)
 if get(ENV, "CONDA_JL_VERSION", "") == "2"
     # For IPython.testing.globalipapp
     IPython.install_dependency("mock"; force=true)
@@ -21,11 +21,8 @@ end
 
 # Build PyCall again, since above installation could have changed
 # Python versions.
-Pkg.build("PyCall")
-
-if VERSION >= v"0.7.0-"
-    @info "PyCall/deps/build.log:"
-    print(read(
-        joinpath(dirname(dirname(pathof(IPython.PyCall))), "deps", "build.log"),
-        String))
+if VERSION < v"1.1"
+    Pkg.build("PyCall")
+else
+    Pkg.build("PyCall"; verbose = true)
 end
